@@ -152,5 +152,207 @@
     "placeholders": {
       "size": { "type": "String" }
     }
-  }
+  },
+  "shipSelection": "Select Ship",
+  "@shipSelection": {
+    "description": "Ship selection page title"
+  },
+  "searchShip": "Search ship...",
+  "@searchShip": {
+    "description": "Ship search hint"
+  },
+  "fittingName": "Fitting Name",
+  "@fittingName": {
+    "description": "Label for fitting name input"
+  },
+  "createFitting": "Create",
+  "@createFitting": {
+    "description": "Create fitting button"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button"
+  },
+  "tabCharacterFit": "Character",
+  "@tabCharacterFit": {
+    "description": "Character tab in fitting detail"
+  },
+  "tabFittingDetail": "Fitting",
+  "@tabFittingDetail": {
+    "description": "Fitting tab in fitting detail"
+  },
+  "tabDrones": "Drones",
+  "@tabDrones": {
+    "description": "Drones tab in fitting detail"
+  },
+  "tabStats": "Stats",
+  "@tabStats": {
+    "description": "Statistics tab in fitting detail"
+  },
+  "emptySlot": "Empty",
+  "@emptySlot": {
+    "description": "Empty slot placeholder"
+  },
+  "noFittings": "No fittings yet",
+  "@noFittings": {
+    "description": "Empty state text when no fittings exist"
+  },
+  "noFittingsHint": "Tap + to create a new fitting",
+  "@noFittingsHint": {
+    "description": "Hint text for creating first fitting"
+  },
+  "deleteFitting": "Delete Fitting",
+  "@deleteFitting": {
+    "description": "Delete fitting button"
+  },
+  "deleteConfirm": "Delete \"{name}\"?",
+  "@deleteConfirm": {
+    "description": "Delete confirmation message",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button"
+  },
+  "capacitor": "Capacitor",
+  "@capacitor": {
+    "description": "Capacitor stats label"
+  },
+  "offense": "Offense",
+  "@offense": {
+    "description": "Offense stats label"
+  },
+  "defense": "Defense",
+  "@defense": {
+    "description": "Defense stats label"
+  },
+  "targeting": "Targeting",
+  "@targeting": {
+    "description": "Targeting stats label"
+  },
+  "navigation": "Navigation",
+  "@navigation": {
+    "description": "Navigation stats label"
+  },
+  "noDrones": "No drones",
+  "@noDrones": {
+    "description": "Empty drones placeholder"
+  },
+  "addDrone": "Add Drone",
+  "@addDrone": {
+    "description": "Add drone button"
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Active state label"
+  },
+  "passive": "Passive",
+  "@passive": {
+    "description": "Passive state label"
+  },
+  "characterPlaceholder": "Character management coming soon",
+  "@characterPlaceholder": {
+    "description": "Character tab placeholder"
+  },
+  "statsPlaceholder": "Stats will show after engine calculation",
+  "@statsPlaceholder": {
+    "description": "Stats tab placeholder"
+  },
+  "searchModule": "Search module...",
+  "@searchModule": {
+    "description": "Module search hint"
+  },
+  "searchDrone": "Search drone...",
+  "@searchDrone": {
+    "description": "Drone search hint"
+  },
+  "selectModule": "Select Module",
+  "@selectModule": {
+    "description": "Module selection page title"
+  },
+  "selectDrone": "Select Drone",
+  "@selectDrone": {
+    "description": "Drone selection page title"
+  },
+  "copy": "Copy",
+  "@copy": {
+    "description": "Copy module menu item"
+  },
+  "ammo": "Ammunition",
+  "@ammo": {
+    "description": "Ammunition menu item"
+  },
+  "removeCharge": "Remove Charge",
+  "@removeCharge": {
+    "description": "Remove charge menu item"
+  },
+  "selectAmmo": "Select Ammunition",
+  "@selectAmmo": {
+    "description": "Ammunition selection page title"
+  },
+  "resources": "Resources",
+  "@resources": {
+    "description": "Fitting resources stats category"
+  },
+  "statCapacity": "Capacity",
+  "statRechargeTime": "Recharge Time",
+  "statCapStability": "Cap Stability",
+  "statStable": "Stable",
+  "statCapEmptyIn": "Cap Empty In",
+  "statNoData": "No data",
+  "statDpsNoReload": "DPS (no reload)",
+  "statDpsReload": "DPS (w/ reload)",
+  "statAlphaStrike": "Alpha Strike",
+  "statDroneDps": "Drone DPS",
+  "statEhp": "EHP (uniform)",
+  "statShieldHp": "Shield HP",
+  "statShieldRecharge": "Shield Recharge",
+  "statPeakRecharge": "Peak Passive Regen",
+  "statShieldResist": "Shield Resist",
+  "statArmorHp": "Armor HP",
+  "statArmorResist": "Armor Resist",
+  "statHullHp": "Hull HP",
+  "statHullResist": "Hull Resist",
+  "statMaxTargetRange": "Max Target Range",
+  "statMaxLockedTargets": "Max Locked Targets",
+  "statScanResolution": "Scan Resolution",
+  "statSensorStrength": "Sensor Strength",
+  "statMaxVelocity": "Max Velocity",
+  "statInertiaModifier": "Inertia Modifier",
+  "statAlignTime": "Align Time",
+  "statSignatureRadius": "Signature Radius",
+  "statMass": "Mass",
+  "statWarpSpeed": "Warp Speed",
+  "statCpu": "CPU",
+  "statCpuUsedTotal": "{used} / {total} tf",
+  "@statCpuUsedTotal": {
+    "placeholders": {
+      "used": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "statPg": "Power Grid",
+  "statPgUsedTotal": "{used} / {total} MW",
+  "@statPgUsedTotal": {
+    "placeholders": {
+      "used": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "statTurretHardpoints": "Turret Hardpoints",
+  "statLauncherHardpoints": "Launcher Hardpoints",
+  "statDroneBandwidth": "Drone Bandwidth",
+  "statDroneCapacity": "Drone Bay",
+  "statMaxActiveDrones": "Max Active Drones",
+  "statCalibration": "Calibration",
+  "statUsedTotal": "{used} / {total}",
+  "@statUsedTotal": {
+    "placeholders": {
+      "used": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "noModulesFound": "No modules found"
 }

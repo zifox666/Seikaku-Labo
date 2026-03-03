@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/app_localizations.dart';
 
 import 'pages/splash/splash_page.dart';
+import 'providers/app_providers.dart';
+import 'providers/fitting_provider.dart';
 import 'providers/sde_provider.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
@@ -27,17 +29,38 @@ class SeikakuLaboApp extends ConsumerWidget {
       theme: AppTheme.darkTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: sdeReady ? const _MainApp() : const SplashPage(),
+      home: sdeReady ? _MainApp() : const SplashPage(),
     );
   }
 }
 
 /// 主界面包装 — 使用 go_router
-class _MainApp extends StatelessWidget {
-  const _MainApp();
+class _MainApp extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends ConsumerState<_MainApp> {
+  @override
+  void initState() {
+    super.initState();
+    _initAppDatabase();
+  }
+
+  Future<void> _initAppDatabase() async {
+    final db = ref.read(appDatabaseProvider);
+    await db.open();
+    await ref.read(savedFitsProvider.notifier).load();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // 同步系统 locale 到 sdeLanguageProvider
+    final locale = Localizations.localeOf(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(sdeLanguageProvider.notifier).state = locale.languageCode;
+    });
+
     return MaterialApp.router(
       title: 'Seikaku Labo',
       debugShowCheckedModeBanner: false,

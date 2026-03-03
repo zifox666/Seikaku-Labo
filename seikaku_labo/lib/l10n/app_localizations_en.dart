@@ -122,4 +122,240 @@ class AppLocalizationsEn extends AppLocalizations {
   String sdeSize(String size) {
     return 'Size: $size';
   }
+
+  @override
+  String get shipSelection => 'Select Ship';
+
+  @override
+  String get searchShip => 'Search ship...';
+
+  @override
+  String get fittingName => 'Fitting Name';
+
+  @override
+  String get createFitting => 'Create';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get tabCharacterFit => 'Character';
+
+  @override
+  String get tabFittingDetail => 'Fitting';
+
+  @override
+  String get tabDrones => 'Drones';
+
+  @override
+  String get tabStats => 'Stats';
+
+  @override
+  String get emptySlot => 'Empty';
+
+  @override
+  String get noFittings => 'No fittings yet';
+
+  @override
+  String get noFittingsHint => 'Tap + to create a new fitting';
+
+  @override
+  String get deleteFitting => 'Delete Fitting';
+
+  @override
+  String deleteConfirm(String name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get capacitor => 'Capacitor';
+
+  @override
+  String get offense => 'Offense';
+
+  @override
+  String get defense => 'Defense';
+
+  @override
+  String get targeting => 'Targeting';
+
+  @override
+  String get navigation => 'Navigation';
+
+  @override
+  String get noDrones => 'No drones';
+
+  @override
+  String get addDrone => 'Add Drone';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get passive => 'Passive';
+
+  @override
+  String get characterPlaceholder => 'Character management coming soon';
+
+  @override
+  String get statsPlaceholder => 'Stats will show after engine calculation';
+
+  @override
+  String get searchModule => 'Search module...';
+
+  @override
+  String get searchDrone => 'Search drone...';
+
+  @override
+  String get selectModule => 'Select Module';
+
+  @override
+  String get selectDrone => 'Select Drone';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get ammo => 'Ammunition';
+
+  @override
+  String get removeCharge => 'Remove Charge';
+
+  @override
+  String get selectAmmo => 'Select Ammunition';
+
+  @override
+  String get resources => 'Resources';
+
+  @override
+  String get statCapacity => 'Capacity';
+
+  @override
+  String get statRechargeTime => 'Recharge Time';
+
+  @override
+  String get statCapStability => 'Cap Stability';
+
+  @override
+  String get statStable => 'Stable';
+
+  @override
+  String get statCapEmptyIn => 'Cap Empty In';
+
+  @override
+  String get statNoData => 'No data';
+
+  @override
+  String get statDpsNoReload => 'DPS (no reload)';
+
+  @override
+  String get statDpsReload => 'DPS (w/ reload)';
+
+  @override
+  String get statAlphaStrike => 'Alpha Strike';
+
+  @override
+  String get statDroneDps => 'Drone DPS';
+
+  @override
+  String get statEhp => 'EHP (uniform)';
+
+  @override
+  String get statShieldHp => 'Shield HP';
+
+  @override
+  String get statShieldRecharge => 'Shield Recharge';
+
+  @override
+  String get statPeakRecharge => 'Peak Passive Regen';
+
+  @override
+  String get statShieldResist => 'Shield Resist';
+
+  @override
+  String get statArmorHp => 'Armor HP';
+
+  @override
+  String get statArmorResist => 'Armor Resist';
+
+  @override
+  String get statHullHp => 'Hull HP';
+
+  @override
+  String get statHullResist => 'Hull Resist';
+
+  @override
+  String get statMaxTargetRange => 'Max Target Range';
+
+  @override
+  String get statMaxLockedTargets => 'Max Locked Targets';
+
+  @override
+  String get statScanResolution => 'Scan Resolution';
+
+  @override
+  String get statSensorStrength => 'Sensor Strength';
+
+  @override
+  String get statMaxVelocity => 'Max Velocity';
+
+  @override
+  String get statInertiaModifier => 'Inertia Modifier';
+
+  @override
+  String get statAlignTime => 'Align Time';
+
+  @override
+  String get statSignatureRadius => 'Signature Radius';
+
+  @override
+  String get statMass => 'Mass';
+
+  @override
+  String get statWarpSpeed => 'Warp Speed';
+
+  @override
+  String get statCpu => 'CPU';
+
+  @override
+  String statCpuUsedTotal(String used, String total) {
+    return '$used / $total tf';
+  }
+
+  @override
+  String get statPg => 'Power Grid';
+
+  @override
+  String statPgUsedTotal(String used, String total) {
+    return '$used / $total MW';
+  }
+
+  @override
+  String get statTurretHardpoints => 'Turret Hardpoints';
+
+  @override
+  String get statLauncherHardpoints => 'Launcher Hardpoints';
+
+  @override
+  String get statDroneBandwidth => 'Drone Bandwidth';
+
+  @override
+  String get statDroneCapacity => 'Drone Bay';
+
+  @override
+  String get statMaxActiveDrones => 'Max Active Drones';
+
+  @override
+  String get statCalibration => 'Calibration';
+
+  @override
+  String statUsedTotal(String used, String total) {
+    return '$used / $total';
+  }
+
+  @override
+  String get noModulesFound => 'No modules found';
 }

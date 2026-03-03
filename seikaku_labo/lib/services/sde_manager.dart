@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 从 GitHub Release(garveen/eve-sde-converter) 下载 sde.sqlite.bz2，
 /// 解压后存储在应用数据目录中。
 class SdeManager {
-  static const _repoOwner = 'garveen';
+  static const _repoOwner = 'zifox666';
   static const _repoName = 'eve-sde-converter';
   static const _assetName = 'sde.sqlite.bz2';
   static const _dbFileName = 'sde.sqlite';

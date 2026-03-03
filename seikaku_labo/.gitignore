@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+seikaku_engine.dll
+seikaku_engine.dll.lib
+seikaku_engine.lib

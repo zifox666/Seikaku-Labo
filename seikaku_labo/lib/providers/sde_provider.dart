@@ -123,6 +123,9 @@ class SdeNotifier extends StateNotifier<SdeState> {
     );
 
     try {
+      // 先关闭数据库，释放文件锁，否则 Windows 无法替换文件
+      _sdeService.close();
+
       await SdeManager.downloadAndInstall(
         release,
         onProgress: (progress, stage) {

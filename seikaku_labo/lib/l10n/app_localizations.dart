@@ -313,6 +313,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Size: {size}'**
   String sdeSize(String size);
+
+  /// Ship selection page title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Ship'**
+  String get shipSelection;
+
+  /// Ship search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search ship...'**
+  String get searchShip;
+
+  /// Label for fitting name input
+  ///
+  /// In en, this message translates to:
+  /// **'Fitting Name'**
+  String get fittingName;
+
+  /// Create fitting button
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createFitting;
+
+  /// Cancel button
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// Character tab in fitting detail
+  ///
+  /// In en, this message translates to:
+  /// **'Character'**
+  String get tabCharacterFit;
+
+  /// Fitting tab in fitting detail
+  ///
+  /// In en, this message translates to:
+  /// **'Fitting'**
+  String get tabFittingDetail;
+
+  /// Drones tab in fitting detail
+  ///
+  /// In en, this message translates to:
+  /// **'Drones'**
+  String get tabDrones;
+
+  /// Statistics tab in fitting detail
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get tabStats;
+
+  /// Empty slot placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get emptySlot;
+
+  /// Empty state text when no fittings exist
+  ///
+  /// In en, this message translates to:
+  /// **'No fittings yet'**
+  String get noFittings;
+
+  /// Hint text for creating first fitting
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to create a new fitting'**
+  String get noFittingsHint;
+
+  /// Delete fitting button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Fitting'**
+  String get deleteFitting;
+
+  /// Delete confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String deleteConfirm(String name);
+
+  /// Delete button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Capacitor stats label
+  ///
+  /// In en, this message translates to:
+  /// **'Capacitor'**
+  String get capacitor;
+
+  /// Offense stats label
+  ///
+  /// In en, this message translates to:
+  /// **'Offense'**
+  String get offense;
+
+  /// Defense stats label
+  ///
+  /// In en, this message translates to:
+  /// **'Defense'**
+  String get defense;
+
+  /// Targeting stats label
+  ///
+  /// In en, this message translates to:
+  /// **'Targeting'**
+  String get targeting;
+
+  /// Navigation stats label
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation'**
+  String get navigation;
+
+  /// Empty drones placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'No drones'**
+  String get noDrones;
+
+  /// Add drone button
+  ///
+  /// In en, this message translates to:
+  /// **'Add Drone'**
+  String get addDrone;
+
+  /// Active state label
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// Passive state label
+  ///
+  /// In en, this message translates to:
+  /// **'Passive'**
+  String get passive;
+
+  /// Character tab placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Character management coming soon'**
+  String get characterPlaceholder;
+
+  /// Stats tab placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Stats will show after engine calculation'**
+  String get statsPlaceholder;
+
+  /// Module search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search module...'**
+  String get searchModule;
+
+  /// Drone search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search drone...'**
+  String get searchDrone;
+
+  /// Module selection page title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Module'**
+  String get selectModule;
+
+  /// Drone selection page title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Drone'**
+  String get selectDrone;
+
+  /// Copy module menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// Ammunition menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Ammunition'**
+  String get ammo;
+
+  /// Remove charge menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Charge'**
+  String get removeCharge;
+
+  /// Ammunition selection page title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Ammunition'**
+  String get selectAmmo;
+
+  /// Fitting resources stats category
+  ///
+  /// In en, this message translates to:
+  /// **'Resources'**
+  String get resources;
+
+  /// No description provided for @statCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Capacity'**
+  String get statCapacity;
+
+  /// No description provided for @statRechargeTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Recharge Time'**
+  String get statRechargeTime;
+
+  /// No description provided for @statCapStability.
+  ///
+  /// In en, this message translates to:
+  /// **'Cap Stability'**
+  String get statCapStability;
+
+  /// No description provided for @statStable.
+  ///
+  /// In en, this message translates to:
+  /// **'Stable'**
+  String get statStable;
+
+  /// No description provided for @statCapEmptyIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cap Empty In'**
+  String get statCapEmptyIn;
+
+  /// No description provided for @statNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get statNoData;
+
+  /// No description provided for @statDpsNoReload.
+  ///
+  /// In en, this message translates to:
+  /// **'DPS (no reload)'**
+  String get statDpsNoReload;
+
+  /// No description provided for @statDpsReload.
+  ///
+  /// In en, this message translates to:
+  /// **'DPS (w/ reload)'**
+  String get statDpsReload;
+
+  /// No description provided for @statAlphaStrike.
+  ///
+  /// In en, this message translates to:
+  /// **'Alpha Strike'**
+  String get statAlphaStrike;
+
+  /// No description provided for @statDroneDps.
+  ///
+  /// In en, this message translates to:
+  /// **'Drone DPS'**
+  String get statDroneDps;
+
+  /// No description provided for @statEhp.
+  ///
+  /// In en, this message translates to:
+  /// **'EHP (uniform)'**
+  String get statEhp;
+
+  /// No description provided for @statShieldHp.
+  ///
+  /// In en, this message translates to:
+  /// **'Shield HP'**
+  String get statShieldHp;
+
+  /// No description provided for @statShieldRecharge.
+  ///
+  /// In en, this message translates to:
+  /// **'Shield Recharge'**
+  String get statShieldRecharge;
+
+  /// No description provided for @statPeakRecharge.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak Passive Regen'**
+  String get statPeakRecharge;
+
+  /// No description provided for @statShieldResist.
+  ///
+  /// In en, this message translates to:
+  /// **'Shield Resist'**
+  String get statShieldResist;
+
+  /// No description provided for @statArmorHp.
+  ///
+  /// In en, this message translates to:
+  /// **'Armor HP'**
+  String get statArmorHp;
+
+  /// No description provided for @statArmorResist.
+  ///
+  /// In en, this message translates to:
+  /// **'Armor Resist'**
+  String get statArmorResist;
+
+  /// No description provided for @statHullHp.
+  ///
+  /// In en, this message translates to:
+  /// **'Hull HP'**
+  String get statHullHp;
+
+  /// No description provided for @statHullResist.
+  ///
+  /// In en, this message translates to:
+  /// **'Hull Resist'**
+  String get statHullResist;
+
+  /// No description provided for @statMaxTargetRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Target Range'**
+  String get statMaxTargetRange;
+
+  /// No description provided for @statMaxLockedTargets.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Locked Targets'**
+  String get statMaxLockedTargets;
+
+  /// No description provided for @statScanResolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Resolution'**
+  String get statScanResolution;
+
+  /// No description provided for @statSensorStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensor Strength'**
+  String get statSensorStrength;
+
+  /// No description provided for @statMaxVelocity.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Velocity'**
+  String get statMaxVelocity;
+
+  /// No description provided for @statInertiaModifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Inertia Modifier'**
+  String get statInertiaModifier;
+
+  /// No description provided for @statAlignTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Align Time'**
+  String get statAlignTime;
+
+  /// No description provided for @statSignatureRadius.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature Radius'**
+  String get statSignatureRadius;
+
+  /// No description provided for @statMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Mass'**
+  String get statMass;
+
+  /// No description provided for @statWarpSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Warp Speed'**
+  String get statWarpSpeed;
+
+  /// No description provided for @statCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU'**
+  String get statCpu;
+
+  /// No description provided for @statCpuUsedTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} / {total} tf'**
+  String statCpuUsedTotal(String used, String total);
+
+  /// No description provided for @statPg.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Grid'**
+  String get statPg;
+
+  /// No description provided for @statPgUsedTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} / {total} MW'**
+  String statPgUsedTotal(String used, String total);
+
+  /// No description provided for @statTurretHardpoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Turret Hardpoints'**
+  String get statTurretHardpoints;
+
+  /// No description provided for @statLauncherHardpoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Launcher Hardpoints'**
+  String get statLauncherHardpoints;
+
+  /// No description provided for @statDroneBandwidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Drone Bandwidth'**
+  String get statDroneBandwidth;
+
+  /// No description provided for @statDroneCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Drone Bay'**
+  String get statDroneCapacity;
+
+  /// No description provided for @statMaxActiveDrones.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Active Drones'**
+  String get statMaxActiveDrones;
+
+  /// No description provided for @statCalibration.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration'**
+  String get statCalibration;
+
+  /// No description provided for @statUsedTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} / {total}'**
+  String statUsedTotal(String used, String total);
+
+  /// No description provided for @noModulesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No modules found'**
+  String get noModulesFound;
 }
 
 class _AppLocalizationsDelegate

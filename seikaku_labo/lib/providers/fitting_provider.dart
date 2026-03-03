@@ -1,0 +1,486 @@
+import 'dart:convert';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../models/esf_fit.dart';
+import '../models/fitting_state.dart';
+import 'app_providers.dart';
+import 'sde_provider.dart';
+
+/// 当前装配状态
+class FittingState {
+  final EsfFit? fit;
+  final SavedFit? savedFit;
+  final String? shipName;
+  final Map<String, int>? slotCounts; // high/medium/low/rig/subSystem
+
+  const FittingState({
+    this.fit,
+    this.savedFit,
+    this.shipName,
+    this.slotCounts,
+  });
+
+  FittingState copyWith({
+    EsfFit? fit,
+    SavedFit? savedFit,
+    String? shipName,
+    Map<String, int>? slotCounts,
+  }) {
+    return FittingState(
+      fit: fit ?? this.fit,
+      savedFit: savedFit ?? this.savedFit,
+      shipName: shipName ?? this.shipName,
+      slotCounts: slotCounts ?? this.slotCounts,
+    );
+  }
+}
+
+/// 当前装配 Notifier
+class FittingNotifier extends StateNotifier<FittingState> {
+  final Ref _ref;
+  FittingNotifier(this._ref) : super(const FittingState());
+
+  /// 创建新装配
+  void createFit({
+    required int shipTypeId,
+    required String shipName,
+    required String fitName,
+    required Map<String, int> slotCounts,
+  }) {
+    final fit = EsfFit(shipTypeId: shipTypeId);
+    final now = DateTime.now();
+    final saved = SavedFit(
+      id: now.millisecondsSinceEpoch.toString(),
+      name: fitName,
+      shipTypeId: shipTypeId,
+      shipName: shipName,
+      fitJson: jsonEncode(fit.toJson()),
+      createdAt: now,
+      updatedAt: now,
+    );
+    state = FittingState(
+      fit: fit,
+      savedFit: saved,
+      shipName: shipName,
+      slotCounts: slotCounts,
+    );
+  }
+
+  /// 加载已有装配
+  void loadFit(SavedFit saved, Map<String, int> slotCounts) {
+    final fit = EsfFit.fromJson(
+      jsonDecode(saved.fitJson) as Map<String, dynamic>,
+    );
+    state = FittingState(
+      fit: fit,
+      savedFit: saved,
+      shipName: saved.shipName,
+      slotCounts: slotCounts,
+    );
+  }
+
+  /// 添加模块到指定槽位
+  void addModule(FitModule module) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final modules = List<FitModule>.from(fit.modules)..add(module);
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: modules,
+      drones: fit.drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 移除指定槽位的模块
+  void removeModule(SlotType slotType, int index) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final modules = fit.modules
+        .where((m) => !(m.slot.type == slotType && m.slot.index == index))
+        .toList();
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: modules,
+      drones: fit.drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 切换模块状态（根据引擎 max_state 决定可用状态范围）
+  void toggleModuleState(SlotType slotType, int index, {ModuleState? maxState}) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final modules = fit.modules.map((m) {
+      if (m.slot.type == slotType && m.slot.index == index) {
+        final ModuleState nextState;
+        // 根据引擎 max_state 决定循环范围
+        // 无引擎数据时仅允许 passive ↔ online，防止被动模块被误激活
+        final effectiveMax = maxState ?? ModuleState.online;
+        final rotation = switch (effectiveMax) {
+          ModuleState.passive => [ModuleState.passive],
+          ModuleState.online => [ModuleState.passive, ModuleState.online],
+          ModuleState.active => [ModuleState.passive, ModuleState.online, ModuleState.active],
+          ModuleState.overload => [ModuleState.passive, ModuleState.online, ModuleState.active, ModuleState.overload],
+        };
+        final idx = rotation.indexOf(m.state);
+        nextState = idx < 0
+            ? rotation.last
+            : rotation[(idx + 1) % rotation.length];
+        return FitModule(
+          typeId: m.typeId,
+          slot: m.slot,
+          state: nextState,
+          charge: m.charge,
+        );
+      }
+      return m;
+    }).toList();
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: modules,
+      drones: fit.drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 同步引擎计算后的模块状态（引擎会钳位超出 max_state 的状态）
+  void syncStatesFromEngine(Map<String, dynamic> engineData) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final items = engineData['items'] as List<dynamic>?;
+    if (items == null) return;
+
+    bool changed = false;
+    final modules = fit.modules.map((m) {
+      // 在引擎结果中查找对应模块
+      for (final item in items) {
+        final engineItem = item as Map<String, dynamic>;
+        final slot = engineItem['slot'] as Map<String, dynamic>?;
+        if (slot == null) continue;
+        if (slot['type'] != m.slot.type.value || slot['index'] != m.slot.index) {
+          continue;
+        }
+        // 找到了对应的引擎项目
+        final engineState = engineItem['state'] as String?;
+        final engineMaxState = engineItem['max_state'] as String?;
+        if (engineState == null || engineMaxState == null) break;
+
+        try {
+          final clampedState = ModuleState.fromValue(engineState);
+          if (clampedState != m.state) {
+            changed = true;
+            return FitModule(
+              typeId: m.typeId,
+              slot: m.slot,
+              state: clampedState,
+              charge: m.charge,
+            );
+          }
+        } catch (_) {}
+        break;
+      }
+      return m;
+    }).toList();
+
+    if (!changed) return;
+
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: modules,
+      drones: fit.drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 添加无人机
+  void addDrone(FitDrone drone) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final drones = List<FitDrone>.from(fit.drones)..add(drone);
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: fit.modules,
+      drones: drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 移除指定索引的无人机
+  void removeDrone(int index) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final drones = List<FitDrone>.from(fit.drones)..removeAt(index);
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: fit.modules,
+      drones: drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 按类型移除所有无人机
+  void removeDronesByType(int typeId) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final drones = fit.drones.where((d) => d.typeId != typeId).toList();
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: fit.modules,
+      drones: drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 复制模块到同类型的下一个空槽
+  void copyModule(SlotType slotType, int sourceIndex, int totalSlots) {
+    final fit = state.fit;
+    if (fit == null) return;
+    final source = fit.modules.firstWhere(
+      (m) => m.slot.type == slotType && m.slot.index == sourceIndex,
+      orElse: () => throw StateError('Module not found'),
+    );
+    // 找第一个空槽
+    final occupiedIndices = fit.modules
+        .where((m) => m.slot.type == slotType)
+        .map((m) => m.slot.index)
+        .toSet();
+    int? emptyIndex;
+    for (int i = 0; i < totalSlots; i++) {
+      if (!occupiedIndices.contains(i)) {
+        emptyIndex = i;
+        break;
+      }
+    }
+    if (emptyIndex == null) return; // 没有空槽
+    final copy = FitModule(
+      typeId: source.typeId,
+      slot: ModuleSlot(type: slotType, index: emptyIndex),
+      state: source.state,
+      charge: source.charge,
+    );
+    addModule(copy);
+  }
+
+  /// 为槽位设置弹药
+  void setCharge(SlotType slotType, int index, int chargeTypeId) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final modules = fit.modules.map((m) {
+      if (m.slot.type == slotType && m.slot.index == index) {
+        return FitModule(
+          typeId: m.typeId,
+          slot: m.slot,
+          state: m.state,
+          charge: FitCharge(typeId: chargeTypeId),
+        );
+      }
+      return m;
+    }).toList();
+
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: modules,
+      drones: fit.drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 移除槽位的弹药
+  void removeCharge(SlotType slotType, int index) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final modules = fit.modules.map((m) {
+      if (m.slot.type == slotType && m.slot.index == index) {
+        return FitModule(
+          typeId: m.typeId,
+          slot: m.slot,
+          state: m.state,
+          charge: null,
+        );
+      }
+      return m;
+    }).toList();
+
+    final newFit = EsfFit(
+      shipTypeId: fit.shipTypeId,
+      modules: modules,
+      drones: fit.drones,
+    );
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 清空装配
+  void clear() {
+    state = const FittingState();
+  }
+
+  /// 将当前 savedFit 同步到 savedFitsProvider（持久化）
+  void _persistCurrent() {
+    final saved = state.savedFit;
+    if (saved == null) return;
+    _ref.read(savedFitsProvider.notifier).updateFit(saved);
+  }
+}
+
+/// 当前装配 Provider
+final fittingNotifierProvider =
+    StateNotifierProvider<FittingNotifier, FittingState>((ref) {
+  return FittingNotifier(ref);
+});
+
+/// 已保存装配列表 Provider（持久化到 AppDatabase）
+class SavedFitsNotifier extends StateNotifier<List<SavedFit>> {
+  final Ref _ref;
+  bool _loaded = false;
+
+  SavedFitsNotifier(this._ref) : super([]);
+
+  /// 从数据库加载已保存装配（首次调用时自动执行）
+  Future<void> _ensureLoaded() async {
+    if (_loaded) return;
+    _loaded = true;
+    final db = _ref.read(appDatabaseProvider);
+    if (!db.isOpen) {
+      await db.open();
+    }
+    final rows = db.getAllFits();
+    state = rows.map((row) => SavedFit(
+      id: row['id'] as String,
+      name: row['name'] as String,
+      shipTypeId: row['shipTypeId'] as int,
+      shipName: row['shipName'] as String,
+      fitJson: row['fitJson'] as String,
+      createdAt: DateTime.parse(row['createdAt'] as String),
+      updatedAt: DateTime.parse(row['updatedAt'] as String),
+    )).toList();
+  }
+
+  /// 加载数据（供外部调用）
+  Future<void> load() => _ensureLoaded();
+
+  void addFit(SavedFit fit) {
+    final db = _ref.read(appDatabaseProvider);
+    db.upsertFit(
+      id: fit.id,
+      name: fit.name,
+      shipTypeId: fit.shipTypeId,
+      shipName: fit.shipName,
+      fitJson: fit.fitJson,
+      createdAt: fit.createdAt,
+      updatedAt: fit.updatedAt,
+    );
+    state = [...state, fit];
+  }
+
+  void removeFit(String id) {
+    final db = _ref.read(appDatabaseProvider);
+    db.deleteFit(id);
+    state = state.where((f) => f.id != id).toList();
+  }
+
+  void updateFit(SavedFit fit) {
+    final db = _ref.read(appDatabaseProvider);
+    db.upsertFit(
+      id: fit.id,
+      name: fit.name,
+      shipTypeId: fit.shipTypeId,
+      shipName: fit.shipName,
+      fitJson: fit.fitJson,
+      createdAt: fit.createdAt,
+      updatedAt: fit.updatedAt,
+    );
+    state = state.map((f) => f.id == fit.id ? fit : f).toList();
+  }
+}
+
+final savedFitsProvider =
+    StateNotifierProvider<SavedFitsNotifier, List<SavedFit>>((ref) {
+  return SavedFitsNotifier(ref);
+});
+
+/// 舰船分组列表 Provider
+final shipGroupsProvider = Provider<List<ShipGroup>>((ref) {
+  final sdeService = ref.watch(sdeServiceProvider);
+  final lang = ref.watch(sdeLanguageProvider);
+  if (!sdeService.isLoaded) return [];
+  final groups = sdeService.getShipGroups(lang: lang);
+  return groups
+      .map((g) => ShipGroup(
+            groupId: g['groupID'] as int,
+            groupName: g['groupName'] as String,
+          ))
+      .toList();
+});
+
+/// 指定分组下按种族分组的舰船 Provider
+final shipsByGroupProvider =
+    Provider.family<Map<String, List<ShipInfo>>, int>((ref, groupId) {
+  final sdeService = ref.watch(sdeServiceProvider);
+  final lang = ref.watch(sdeLanguageProvider);
+  if (!sdeService.isLoaded) return {};
+  final ships = sdeService.getShipsByGroup(groupId, lang: lang);
+  final shipList = ships
+      .map((s) => ShipInfo(
+            typeId: s['typeID'] as int,
+            typeName: s['typeName'] as String,
+            raceId: s['raceID'] as int?,
+          ))
+      .toList();
+  return RaceInfo.groupByRace(shipList);
+});

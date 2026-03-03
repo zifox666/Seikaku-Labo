@@ -121,4 +121,240 @@ class AppLocalizationsZh extends AppLocalizations {
   String sdeSize(String size) {
     return '大小: $size';
   }
+
+  @override
+  String get shipSelection => '选择舰船';
+
+  @override
+  String get searchShip => '搜索舰船...';
+
+  @override
+  String get fittingName => '装配名称';
+
+  @override
+  String get createFitting => '创建';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get tabCharacterFit => '人物';
+
+  @override
+  String get tabFittingDetail => '装配';
+
+  @override
+  String get tabDrones => '无人机';
+
+  @override
+  String get tabStats => '统计';
+
+  @override
+  String get emptySlot => '空';
+
+  @override
+  String get noFittings => '暂无装配';
+
+  @override
+  String get noFittingsHint => '点击 + 创建新装配';
+
+  @override
+  String get deleteFitting => '删除装配';
+
+  @override
+  String deleteConfirm(String name) {
+    return '删除「$name」？';
+  }
+
+  @override
+  String get delete => '删除';
+
+  @override
+  String get capacitor => '电容';
+
+  @override
+  String get offense => '进攻';
+
+  @override
+  String get defense => '防御';
+
+  @override
+  String get targeting => '锁定';
+
+  @override
+  String get navigation => '导航';
+
+  @override
+  String get noDrones => '无无人机';
+
+  @override
+  String get addDrone => '添加无人机';
+
+  @override
+  String get active => '激活';
+
+  @override
+  String get passive => '被动';
+
+  @override
+  String get characterPlaceholder => '角色管理即将推出';
+
+  @override
+  String get statsPlaceholder => '统计数据将在引擎计算后显示';
+
+  @override
+  String get searchModule => '搜索模块...';
+
+  @override
+  String get searchDrone => '搜索无人机...';
+
+  @override
+  String get selectModule => '选择模块';
+
+  @override
+  String get selectDrone => '选择无人机';
+
+  @override
+  String get copy => '复制';
+
+  @override
+  String get ammo => '弹药';
+
+  @override
+  String get removeCharge => '卸载弹药';
+
+  @override
+  String get selectAmmo => '选择弹药';
+
+  @override
+  String get resources => '装配资源';
+
+  @override
+  String get statCapacity => '容量';
+
+  @override
+  String get statRechargeTime => '充能时间';
+
+  @override
+  String get statCapStability => '电容稳定性';
+
+  @override
+  String get statStable => '稳定';
+
+  @override
+  String get statCapEmptyIn => '电容耗尽';
+
+  @override
+  String get statNoData => '无数据';
+
+  @override
+  String get statDpsNoReload => 'DPS（不含装填）';
+
+  @override
+  String get statDpsReload => 'DPS（含装填）';
+
+  @override
+  String get statAlphaStrike => '齐射伤害';
+
+  @override
+  String get statDroneDps => '无人机DPS';
+
+  @override
+  String get statEhp => 'EHP（均匀）';
+
+  @override
+  String get statShieldHp => '护盾';
+
+  @override
+  String get statShieldRecharge => '护盾充能';
+
+  @override
+  String get statPeakRecharge => '峰值无源充能';
+
+  @override
+  String get statShieldResist => '护盾抗性';
+
+  @override
+  String get statArmorHp => '装甲';
+
+  @override
+  String get statArmorResist => '装甲抗性';
+
+  @override
+  String get statHullHp => '结构';
+
+  @override
+  String get statHullResist => '结构抗性';
+
+  @override
+  String get statMaxTargetRange => '最大锁定距离';
+
+  @override
+  String get statMaxLockedTargets => '最大锁定数';
+
+  @override
+  String get statScanResolution => '扫描分辨率';
+
+  @override
+  String get statSensorStrength => '传感器强度';
+
+  @override
+  String get statMaxVelocity => '最大速度';
+
+  @override
+  String get statInertiaModifier => '惯性修正';
+
+  @override
+  String get statAlignTime => '对齐时间';
+
+  @override
+  String get statSignatureRadius => '信号半径';
+
+  @override
+  String get statMass => '质量';
+
+  @override
+  String get statWarpSpeed => '跃迁速度';
+
+  @override
+  String get statCpu => 'CPU';
+
+  @override
+  String statCpuUsedTotal(String used, String total) {
+    return '$used / $total tf';
+  }
+
+  @override
+  String get statPg => '能量栅格';
+
+  @override
+  String statPgUsedTotal(String used, String total) {
+    return '$used / $total MW';
+  }
+
+  @override
+  String get statTurretHardpoints => '炮台挂点';
+
+  @override
+  String get statLauncherHardpoints => '导弹发射器挂点';
+
+  @override
+  String get statDroneBandwidth => '无人机带宽';
+
+  @override
+  String get statDroneCapacity => '无人机舱';
+
+  @override
+  String get statMaxActiveDrones => '最大活跃无人机数';
+
+  @override
+  String get statCalibration => '校准值';
+
+  @override
+  String statUsedTotal(String used, String total) {
+    return '$used / $total';
+  }
+
+  @override
+  String get noModulesFound => '未找到模块';
 }
