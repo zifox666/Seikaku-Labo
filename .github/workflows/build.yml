@@ -1,0 +1,170 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      engine_version:
+        description: 'Seikaku-Engine release tag (e.g. v1.0.0), leave empty for latest'
+        required: false
+        default: 'latest'
+      build_number:
+        description: 'Build number (versionCode)'
+        required: false
+        default: '1'
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Windows x64
+  # ─────────────────────────────────────────────
+  build-windows:
+    name: Build Windows (x64)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Download Seikaku Engine (Windows x86_64)
+        shell: pwsh
+        run: |
+          $version = "${{ github.event.inputs.engine_version }}"
+          if ($version -eq "latest" -or $version -eq "") {
+            $baseUrl = "https://github.com/zifox666/Seikaku-Engine/releases/latest/download"
+          } else {
+            $baseUrl = "https://github.com/zifox666/Seikaku-Engine/releases/download/$version"
+          }
+
+          $url = "$baseUrl/seikaku-engine-windows-x86_64.zip"
+          Write-Host "Downloading: $url"
+          Invoke-WebRequest -Uri $url -OutFile engine-win.zip
+
+          Expand-Archive engine-win.zip -DestinationPath engine-win-out -Force
+
+          # 找到 DLL 无论它在压缩包的哪层目录
+          $dll = Get-ChildItem -Path engine-win-out -Filter seikaku_engine.dll -Recurse | Select-Object -First 1
+          if ($null -eq $dll) {
+            Write-Error "seikaku_engine.dll not found in archive"
+            exit 1
+          }
+          Write-Host "Found DLL: $($dll.FullName)"
+          Copy-Item $dll.FullName -Destination seikaku_labo\seikaku_engine.dll -Force
+
+      - name: Flutter pub get
+        working-directory: seikaku_labo
+        run: flutter pub get
+
+      - name: Build Windows (Release)
+        working-directory: seikaku_labo
+        run: flutter build windows --release --build-number=${{ github.event.inputs.build_number }}
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: seikaku-labo-windows-x64
+          path: seikaku_labo/build/windows/x64/runner/Release/
+          retention-days: 30
+
+  # ─────────────────────────────────────────────
+  # Android
+  # ─────────────────────────────────────────────
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Download Seikaku Engine (Android)
+        run: |
+          VERSION="${{ github.event.inputs.engine_version }}"
+          if [ -z "$VERSION" ] || [ "$VERSION" = "latest" ]; then
+            BASE_URL="https://github.com/zifox666/Seikaku-Engine/releases/latest/download"
+          else
+            BASE_URL="https://github.com/zifox666/Seikaku-Engine/releases/download/$VERSION"
+          fi
+
+          echo "Base URL: $BASE_URL"
+
+          declare -A ABI_MAP=(
+            ["arm64-v8a"]="seikaku-engine-android-arm64-v8a.tar.gz"
+            ["armeabi-v7a"]="seikaku-engine-android-armeabi-v7a.tar.gz"
+            ["x86_64"]="seikaku-engine-android-x86_64.tar.gz"
+          )
+
+          for ABI in "${!ABI_MAP[@]}"; do
+            ARCHIVE="${ABI_MAP[$ABI]}"
+            DEST="seikaku_labo/android/app/src/main/jniLibs/$ABI"
+            mkdir -p "$DEST"
+
+            echo "Downloading $ARCHIVE for $ABI..."
+            curl -fsSL "$BASE_URL/$ARCHIVE" -o "/tmp/$ARCHIVE"
+
+            TMP_DIR="/tmp/engine-$ABI"
+            mkdir -p "$TMP_DIR"
+            tar -xzf "/tmp/$ARCHIVE" -C "$TMP_DIR"
+
+            # 找到 libseikaku_engine.so 无论在哪层目录
+            SO_FILE=$(find "$TMP_DIR" -name "libseikaku_engine.so" | head -n 1)
+            if [ -z "$SO_FILE" ]; then
+              echo "ERROR: libseikaku_engine.so not found for $ABI"
+              exit 1
+            fi
+            echo "Found: $SO_FILE -> $DEST/"
+            cp "$SO_FILE" "$DEST/libseikaku_engine.so"
+          done
+
+      # ── 可选：Release 签名（配置以下 Secrets 后自动启用）──
+      # Secrets:
+      #   ANDROID_KEYSTORE      Base64 编码的 .jks / .keystore 文件
+      #   ANDROID_KEY_ALIAS     Key alias
+      #   ANDROID_KEY_PASSWORD  Key 密码
+      #   ANDROID_STORE_PASSWORD Keystore 密码
+      - name: Setup Android signing
+        if: ${{ secrets.ANDROID_KEYSTORE != '' }}
+        working-directory: seikaku_labo/android
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystore.jks
+          cat >> key.properties <<EOF
+          storeFile=../android/keystore.jks
+          storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+
+      - name: Flutter pub get
+        working-directory: seikaku_labo
+        run: flutter pub get
+
+      - name: Build Android APK (split per ABI)
+        working-directory: seikaku_labo
+        run: |
+          flutter build apk \
+            --release \
+            --split-per-abi \
+            --build-number=${{ github.event.inputs.build_number }}
+
+      - name: Upload Android APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: seikaku-labo-android-apks
+          path: seikaku_labo/build/app/outputs/flutter-apk/*.apk
+          retention-days: 30
