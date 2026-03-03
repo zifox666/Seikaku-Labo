@@ -40,7 +40,7 @@ class FitModule {
   const FitModule({
     required this.typeId,
     required this.slot,
-    this.state = ModuleState.active,
+    this.state = ModuleState.online,
     this.charge,
   });
 

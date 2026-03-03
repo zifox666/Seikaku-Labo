@@ -128,9 +128,8 @@ class FittingNotifier extends StateNotifier<FittingState> {
     final modules = fit.modules.map((m) {
       if (m.slot.type == slotType && m.slot.index == index) {
         final ModuleState nextState;
-        // 根据引擎 max_state 决定循环范围
-        // 无引擎数据时仅允许 passive ↔ online，防止被动模块被误激活
-        final effectiveMax = maxState ?? ModuleState.online;
+        // 无引擎数据时默认 Active（2态：Offline/Online），防止被动模块被误激活
+        final effectiveMax = maxState ?? ModuleState.active;
         final rotation = switch (effectiveMax) {
           ModuleState.passive => [ModuleState.passive],
           ModuleState.online => [ModuleState.passive, ModuleState.online],

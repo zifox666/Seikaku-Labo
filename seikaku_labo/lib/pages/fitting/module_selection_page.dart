@@ -462,7 +462,7 @@ class _ModuleTile extends ConsumerWidget {
         final module = FitModule(
           typeId: typeId,
           slot: ModuleSlot(type: slotType, index: slotIndex),
-          // 默认 Active 状态，引擎计算后会自动钳位被动模块的状态
+          state: ModuleState.online,
         );
         ref.read(fittingNotifierProvider.notifier).addModule(module);
         Navigator.of(context).pop();
