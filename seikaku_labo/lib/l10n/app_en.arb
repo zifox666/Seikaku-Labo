@@ -1,0 +1,156 @@
+{
+  "@@locale": "en",
+  "appTitle": "Seikaku Labo",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "tabFitting": "Fitting",
+  "@tabFitting": {
+    "description": "Bottom navigation tab for ship fitting"
+  },
+  "tabMarket": "Market",
+  "@tabMarket": {
+    "description": "Bottom navigation tab for market browser"
+  },
+  "tabCharacter": "Character",
+  "@tabCharacter": {
+    "description": "Bottom navigation tab for character info"
+  },
+  "tabSettings": "Settings",
+  "@tabSettings": {
+    "description": "Bottom navigation tab for settings"
+  },
+  "fittingTitle": "Ship Fitting",
+  "@fittingTitle": {
+    "description": "Title for fitting page"
+  },
+  "marketTitle": "Market Browser",
+  "@marketTitle": {
+    "description": "Title for market page"
+  },
+  "characterTitle": "Character",
+  "@characterTitle": {
+    "description": "Title for character page"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title for settings page"
+  },
+  "newFitting": "New Fitting",
+  "@newFitting": {
+    "description": "Button to create a new fitting"
+  },
+  "selectShip": "Select Ship",
+  "@selectShip": {
+    "description": "Prompt to select a ship"
+  },
+  "highSlots": "High Slots",
+  "@highSlots": {
+    "description": "High power slots"
+  },
+  "mediumSlots": "Medium Slots",
+  "@mediumSlots": {
+    "description": "Medium power slots"
+  },
+  "lowSlots": "Low Slots",
+  "@lowSlots": {
+    "description": "Low power slots"
+  },
+  "rigSlots": "Rig Slots",
+  "@rigSlots": {
+    "description": "Rig slots"
+  },
+  "drones": "Drones",
+  "@drones": {
+    "description": "Drones section"
+  },
+  "comingSoon": "Coming Soon",
+  "@comingSoon": {
+    "description": "Placeholder text for unfinished features"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme setting label"
+  },
+  "sdeDatabase": "SDE Database",
+  "@sdeDatabase": {
+    "description": "SDE database setting"
+  },
+  "sdeDatabaseNotLoaded": "Not loaded",
+  "@sdeDatabaseNotLoaded": {
+    "description": "SDE database not loaded status"
+  },
+  "sdeDatabaseLoaded": "Loaded",
+  "@sdeDatabaseLoaded": {
+    "description": "SDE database loaded status"
+  },
+  "sdeChecking": "Checking for SDE updates...",
+  "@sdeChecking": {
+    "description": "SDE update check in progress"
+  },
+  "sdeDownloading": "Downloading SDE database...",
+  "@sdeDownloading": {
+    "description": "SDE download in progress"
+  },
+  "sdeExtracting": "Extracting database...",
+  "@sdeExtracting": {
+    "description": "SDE extraction in progress"
+  },
+  "sdeSaving": "Saving database...",
+  "@sdeSaving": {
+    "description": "SDE saving in progress"
+  },
+  "sdeReady": "Database ready",
+  "@sdeReady": {
+    "description": "SDE database is ready"
+  },
+  "sdeUpdateAvailable": "Update available: {tag}",
+  "@sdeUpdateAvailable": {
+    "description": "SDE update available message",
+    "placeholders": {
+      "tag": { "type": "String" }
+    }
+  },
+  "sdeCurrentVersion": "Current: {tag}",
+  "@sdeCurrentVersion": {
+    "description": "Current SDE version",
+    "placeholders": {
+      "tag": { "type": "String" }
+    }
+  },
+  "sdeDownloadUpdate": "Download Update",
+  "@sdeDownloadUpdate": {
+    "description": "Download SDE update button"
+  },
+  "sdeCheckUpdate": "Check for Update",
+  "@sdeCheckUpdate": {
+    "description": "Check for SDE update button"
+  },
+  "sdeDownloadFailed": "Download failed",
+  "@sdeDownloadFailed": {
+    "description": "SDE download failed"
+  },
+  "sdeRetry": "Retry",
+  "@sdeRetry": {
+    "description": "Retry button"
+  },
+  "sdeNoNetwork": "Cannot connect to server. Please check your network.",
+  "@sdeNoNetwork": {
+    "description": "No network connection message"
+  },
+  "sdeFirstLaunch": "First launch: downloading EVE SDE database",
+  "@sdeFirstLaunch": {
+    "description": "First launch download message"
+  },
+  "sdeSize": "Size: {size}",
+  "@sdeSize": {
+    "description": "File size display",
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  }
+}
