@@ -1,16 +1,10 @@
 name: Build
 
 on:
-  workflow_dispatch:
-    inputs:
-      engine_version:
-        description: 'Seikaku-Engine release tag (e.g. v1.0.0), leave empty for latest'
-        required: false
-        default: 'latest'
-      build_number:
-        description: 'Build number (versionCode)'
-        required: false
-        default: '1'
+    push:
+      branches:
+        - main
+    workflow_dispatch:
 
 jobs:
   # ─────────────────────────────────────────────
@@ -33,7 +27,7 @@ jobs:
       - name: Download Seikaku Engine (Windows x86_64)
         shell: pwsh
         run: |
-          $version = "${{ github.event.inputs.engine_version }}"
+          $version = "latest"
           if ($version -eq "latest" -or $version -eq "") {
             $baseUrl = "https://github.com/zifox666/Seikaku-Engine/releases/latest/download"
           } else {
@@ -61,7 +55,7 @@ jobs:
 
       - name: Build Windows (Release)
         working-directory: seikaku_labo
-        run: flutter build windows --release --build-number=${{ github.event.inputs.build_number }}
+        run: flutter build windows --release
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
@@ -95,7 +89,7 @@ jobs:
 
       - name: Download Seikaku Engine (Android)
         run: |
-          VERSION="${{ github.event.inputs.engine_version }}"
+          VERSION="latest"
           if [ -z "$VERSION" ] || [ "$VERSION" = "latest" ]; then
             BASE_URL="https://github.com/zifox666/Seikaku-Engine/releases/latest/download"
           else
@@ -132,24 +126,6 @@ jobs:
             cp "$SO_FILE" "$DEST/libseikaku_engine.so"
           done
 
-      # ── 可选：Release 签名（配置以下 Secrets 后自动启用）──
-      # Secrets:
-      #   ANDROID_KEYSTORE      Base64 编码的 .jks / .keystore 文件
-      #   ANDROID_KEY_ALIAS     Key alias
-      #   ANDROID_KEY_PASSWORD  Key 密码
-      #   ANDROID_STORE_PASSWORD Keystore 密码
-    #   - name: Setup Android signing
-    #     if: secrets.ANDROID_KEYSTORE
-    #     working-directory: seikaku_labo/android
-    #     run: |
-    #       echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystore.jks
-    #       cat >> key.properties <<EOF
-    #       storeFile=../android/keystore.jks
-    #       storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
-    #       keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
-    #       keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
-    #       EOF
-
       - name: Flutter pub get
         working-directory: seikaku_labo
         run: flutter pub get
@@ -159,8 +135,7 @@ jobs:
         run: |
           flutter build apk \
             --release \
-            --split-per-abi \
-            --build-number=${{ github.event.inputs.build_number }}
+            --split-per-abi
 
       - name: Upload Android APKs
         uses: actions/upload-artifact@v4
