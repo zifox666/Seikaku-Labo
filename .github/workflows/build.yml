@@ -138,17 +138,17 @@ jobs:
       #   ANDROID_KEY_ALIAS     Key alias
       #   ANDROID_KEY_PASSWORD  Key 密码
       #   ANDROID_STORE_PASSWORD Keystore 密码
-      - name: Setup Android signing
-        if: ${{ secrets.ANDROID_KEYSTORE != '' }}
-        working-directory: seikaku_labo/android
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystore.jks
-          cat >> key.properties <<EOF
-          storeFile=../android/keystore.jks
-          storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
-          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
-          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
-          EOF
+    #   - name: Setup Android signing
+    #     if: secrets.ANDROID_KEYSTORE
+    #     working-directory: seikaku_labo/android
+    #     run: |
+    #       echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystore.jks
+    #       cat >> key.properties <<EOF
+    #       storeFile=../android/keystore.jks
+    #       storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
+    #       keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+    #       keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+    #       EOF
 
       - name: Flutter pub get
         working-directory: seikaku_labo
