@@ -173,9 +173,16 @@ class SettingsPage extends ConsumerWidget {
 
       case ImagePackStatus.updateAvailable:
         final remote = state.remoteRelease;
-        subtitle = remote != null
-            ? 'Update available: ${remote.tag} (${remote.formattedSize})'
-            : 'Update available';
+        if (remote == null) {
+          subtitle = 'Update available';
+        } else if (remote.isFallback) {
+          final err = state.errorMessage;
+          subtitle = err != null
+              ? 'API check failed — tap to download via fallback link\n$err'
+              : 'Tap to download via fallback link (${remote.tag})';
+        } else {
+          subtitle = 'Update available: ${remote.tag} (${remote.formattedSize})';
+        }
         trailing = FilledButton(
           onPressed: () {
             if (remote != null) {

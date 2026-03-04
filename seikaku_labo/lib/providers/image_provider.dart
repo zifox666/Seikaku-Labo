@@ -74,7 +74,7 @@ class ImagePackNotifier extends StateNotifier<ImagePackState> {
         } else {
           state = state.copyWith(
             status: ImagePackStatus.noImages,
-            errorMessage:
+            errorMessage: result.errorMessage ??
                 'Cannot fetch image pack release info. Check your network.',
           );
         }
@@ -98,13 +98,20 @@ class ImagePackNotifier extends StateNotifier<ImagePackState> {
 
       case ImageUpdateStatus.checkFailed:
         final hasLocal = await ImageManager.hasLocalImages();
-        state = state.copyWith(
-          status: hasLocal ? ImagePackStatus.ready : ImagePackStatus.error,
-          localTag: result.localTag,
-          errorMessage: hasLocal
-              ? 'Update check failed, using local images.'
-              : 'Update check failed and no local image pack found.',
-        );
+        final reason = result.errorMessage ?? 'Unknown error';
+        if (!hasLocal && result.remoteRelease != null) {
+          // 无本地包且 API 失败，自动从备用链接下载
+          await download(result.remoteRelease!);
+        } else {
+          state = state.copyWith(
+            status: hasLocal ? ImagePackStatus.updateAvailable : ImagePackStatus.error,
+            localTag: result.localTag,
+            remoteRelease: result.remoteRelease, // 携带备用 release 供手动更新
+            errorMessage: hasLocal
+                ? 'Update check failed ($reason), using local images.'
+                : 'Update check failed: $reason',
+          );
+        }
         break;
     }
   }
@@ -166,16 +173,18 @@ class ImagePackNotifier extends StateNotifier<ImagePackState> {
           status: ImagePackStatus.noImages,
           remoteRelease: result.remoteRelease,
           errorMessage: result.remoteRelease == null
-              ? 'Cannot fetch release info.'
+              ? result.errorMessage ?? 'Cannot fetch release info.'
               : null,
         );
         break;
       case ImageUpdateStatus.checkFailed:
+        final reason = result.errorMessage ?? 'Unknown error';
         state = state.copyWith(
           status: state.status == ImagePackStatus.ready
-              ? ImagePackStatus.ready
+              ? ImagePackStatus.updateAvailable
               : ImagePackStatus.error,
-          errorMessage: 'Update check failed.',
+          remoteRelease: result.remoteRelease, // 携带备用 release
+          errorMessage: 'Update check failed: $reason',
         );
         break;
     }

@@ -19,6 +19,18 @@ class ImageManager {
   static const _prefKeyTag = 'fsd_release_tag';
   static const _prefKeyPublishedAt = 'fsd_release_published_at';
 
+  /// GitHub API 不可用时使用的备用直链
+  static const _fallbackDownloadUrl =
+      'https://github.com/zifox666/Seikaku-Labo/releases/download/Nightly/image.zip';
+
+  static const _fallbackRelease = ImageReleaseInfo(
+    tag: 'Nightly',
+    publishedAt: '',
+    downloadUrl: _fallbackDownloadUrl,
+    size: 0,
+    isFallback: true,
+  );
+
   /// 获取 fsd 目录（不自动创建）
   static Future<Directory> get fsdDir async {
     final appDir = await getApplicationSupportDirectory();
@@ -50,15 +62,27 @@ class ImageManager {
   }
 
   /// 从 GitHub API 获取最新 release 信息
-  static Future<ImageReleaseInfo?> fetchLatestRelease() async {
+  ///
+  /// 返回 `(info, errorMessage)` 二元组；成功时 errorMessage 为 null，
+  /// 失败时 info 为 null，errorMessage 包含具体原因。
+  static Future<(ImageReleaseInfo?, String?)> fetchLatestRelease() async {
     try {
       final url = Uri.parse(
         'https://api.github.com/repos/$_repoOwner/$_repoName/releases/latest',
       );
       final response = await http.get(url, headers: {
         'Accept': 'application/vnd.github.v3+json',
-      });
-      if (response.statusCode != 200) return null;
+      }).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () => throw Exception('Request timed out (15s)'),
+      );
+
+      if (response.statusCode != 200) {
+        return (
+          null,
+          'GitHub API returned HTTP ${response.statusCode}: ${response.reasonPhrase}'
+        );
+      }
 
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       final tag = json['tag_name'] as String;
@@ -68,17 +92,23 @@ class ImageManager {
       for (final asset in assets) {
         final assetMap = asset as Map<String, dynamic>;
         if (assetMap['name'] == _assetName) {
-          return ImageReleaseInfo(
-            tag: tag,
-            publishedAt: publishedAt,
-            downloadUrl: assetMap['browser_download_url'] as String,
-            size: assetMap['size'] as int,
+          return (
+            ImageReleaseInfo(
+              tag: tag,
+              publishedAt: publishedAt,
+              downloadUrl: assetMap['browser_download_url'] as String,
+              size: assetMap['size'] as int,
+            ),
+            null,
           );
         }
       }
-      return null;
-    } catch (_) {
-      return null;
+      // Release 存在但没有 image.zip 资产
+      return (null, 'Release $tag found but "$_assetName" asset not attached');
+    } on SocketException catch (e) {
+      return (null, 'Network error: ${e.message}');
+    } catch (e) {
+      return (null, e.toString());
     }
   }
 
@@ -87,15 +117,15 @@ class ImageManager {
     final hasLocal = await hasLocalImages();
     final localTag = await getLocalReleaseTag();
 
-    final latestRelease = await fetchLatestRelease();
+    final (latestRelease, fetchError) = await fetchLatestRelease();
 
     if (latestRelease == null) {
+      // API 失败时始终携带备用 release，供 provider 自动或手动下载
       return ImageUpdateCheckResult(
-        status: hasLocal
-            ? ImageUpdateStatus.checkFailed
-            : ImageUpdateStatus.checkFailed,
+        status: ImageUpdateStatus.checkFailed,
         localTag: localTag,
-        remoteRelease: null,
+        remoteRelease: _fallbackRelease,
+        errorMessage: fetchError,
       );
     }
 
@@ -235,15 +265,19 @@ class ImageReleaseInfo {
   final String publishedAt;
   final String downloadUrl;
   final int size;
+  /// true 表示 GitHub API 失败后使用的硬编码备用链接
+  final bool isFallback;
 
   const ImageReleaseInfo({
     required this.tag,
     required this.publishedAt,
     required this.downloadUrl,
     required this.size,
+    this.isFallback = false,
   });
 
   String get formattedSize {
+    if (size <= 0) return '?? MB';
     if (size < 1024) return '$size B';
     if (size < 1024 * 1024) return '${(size / 1024).toStringAsFixed(1)} KB';
     return '${(size / (1024 * 1024)).toStringAsFixed(1)} MB';
@@ -263,10 +297,12 @@ class ImageUpdateCheckResult {
   final ImageUpdateStatus status;
   final String? localTag;
   final ImageReleaseInfo? remoteRelease;
+  final String? errorMessage;
 
   const ImageUpdateCheckResult({
     required this.status,
     this.localTag,
     this.remoteRelease,
+    this.errorMessage,
   });
 }
