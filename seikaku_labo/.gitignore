@@ -47,3 +47,5 @@ app.*.map.json
 seikaku_engine.dll
 seikaku_engine.dll.lib
 seikaku_engine.lib
+
+/android/app/src/main/jniLibs/*

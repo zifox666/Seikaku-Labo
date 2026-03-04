@@ -6,6 +6,7 @@ import '../../models/esf_fit.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/fitting_provider.dart';
 import '../../providers/sde_provider.dart';
+import '../../widgets/type_icon.dart';
 
 /// 模块选择页面 — 搜索或按分组浏览可用模块
 class ModuleSelectionPage extends ConsumerStatefulWidget {
@@ -435,12 +436,10 @@ class _ModuleTile extends ConsumerWidget {
       ),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(4),
-        child: Image.network(
-          'https://images.evetech.net/types/$typeId/icon?size=64',
-          width: 36,
-          height: 36,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Container(
+        child: TypeIcon(
+          typeId: typeId,
+          size: 36,
+          fallback: Container(
             width: 36,
             height: 36,
             color: Colors.white.withAlpha(20),

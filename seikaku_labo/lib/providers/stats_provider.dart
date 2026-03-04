@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_providers.dart';
 import 'fitting_provider.dart';
 import 'sde_provider.dart';
-import '../services/sde_manager.dart';
+import '../services/pb2_manager.dart';
 
 /// 引擎计算结果 Provider
 /// 当装配状态变化时自动重新计算
@@ -28,9 +28,11 @@ final engineResultProvider =
   // 确保引擎已初始化
   if (!engine.isInitialized) {
     try {
-      final dbPath = await SdeManager.dbPath;
-      debugPrint('[Engine] Initializing with DB: $dbPath');
-      engine.init(dbPath);
+      // 将 asset 中的 pb2 文件解压到应用数据目录
+      await Pb2Manager.ensureExtracted();
+      final pb2Dir = await Pb2Manager.pb2DirPath;
+      debugPrint('[Engine] Initializing with pb2 dir: $pb2Dir');
+      engine.init(pb2Dir);
       debugPrint('[Engine] Initialized OK');
     } catch (e) {
       debugPrint('[Engine] Init failed: $e');

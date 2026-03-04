@@ -6,6 +6,7 @@ import '../../models/esf_fit.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/fitting_provider.dart';
 import '../../providers/sde_provider.dart';
+import '../../widgets/type_icon.dart';
 
 /// 弹药选择页面
 class ChargeSelectionPage extends ConsumerStatefulWidget {
@@ -175,24 +176,17 @@ class _ChargeSelectionPageState extends ConsumerState<ChargeSelectionPage> {
                                 child: Row(
                                   children: [
                                     // 弹药图标
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Image.network(
-                                        'https://images.evetech.net/types/$typeId/icon?size=64',
+                                    TypeIcon(
+                                      typeId: typeId,
+                                      size: 32,
+                                      fallback: Container(
                                         width: 32,
                                         height: 32,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                Container(
-                                          width: 32,
-                                          height: 32,
-                                          color: Colors.white.withAlpha(10),
-                                          child: const Icon(
-                                            Icons.circle,
-                                            color: Colors.white24,
-                                            size: 16,
-                                          ),
+                                        color: Colors.white.withAlpha(10),
+                                        child: const Icon(
+                                          Icons.circle,
+                                          color: Colors.white24,
+                                          size: 16,
                                         ),
                                       ),
                                     ),

@@ -6,6 +6,7 @@ import '../../models/fitting_state.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/fitting_provider.dart';
 import '../../providers/sde_provider.dart';
+import '../../widgets/type_icon.dart';
 
 /// 舰船选择页面 — 三级列表：分组 → 种族 → 舰船
 class ShipSelectionPage extends ConsumerStatefulWidget {
@@ -319,19 +320,14 @@ class _ShipIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: Image.network(
-        'https://images.evetech.net/types/$typeId/icon?size=64',
+    return TypeIcon(
+      typeId: typeId,
+      size: 40,
+      fallback: Container(
         width: 40,
         height: 40,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
-          width: 40,
-          height: 40,
-          color: Colors.white.withAlpha(20),
-          child: const Icon(Icons.rocket, color: Colors.white38, size: 24),
-        ),
+        color: Colors.white.withAlpha(20),
+        child: const Icon(Icons.rocket, color: Colors.white38, size: 24),
       ),
     );
   }

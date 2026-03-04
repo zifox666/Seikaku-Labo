@@ -16,6 +16,7 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.dark,
       useMaterial3: true,
+      fontFamily: 'W04',
       colorScheme: ColorScheme.dark(
         primary: _primaryColor,
         secondary: _accentColor,

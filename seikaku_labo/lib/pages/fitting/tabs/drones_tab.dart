@@ -7,6 +7,7 @@ import '../../../providers/app_providers.dart';
 import '../../../providers/fitting_provider.dart';
 import '../../../providers/sde_provider.dart';
 import '../drone_selection_page.dart';
+import '../../../widgets/type_icon.dart';
 
 /// 无人机标签页
 class DronesTab extends ConsumerWidget {
@@ -171,19 +172,14 @@ class _DroneGroupTile extends ConsumerWidget {
       child: Row(
         children: [
           // 无人机图标
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: Image.network(
-              'https://images.evetech.net/types/$typeId/icon?size=64',
+          TypeIcon(
+            typeId: typeId,
+            size: 40,
+            fallback: Container(
               width: 40,
               height: 40,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 40,
-                height: 40,
-                color: Colors.white.withAlpha(20),
-                child: const Icon(Icons.flight, color: Colors.white38, size: 24),
-              ),
+              color: Colors.white.withAlpha(20),
+              child: const Icon(Icons.flight, color: Colors.white38, size: 24),
             ),
           ),
           const SizedBox(width: 12),

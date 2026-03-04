@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/fitting_provider.dart';
 import '../../providers/sde_provider.dart';
+import '../../widgets/type_icon.dart';
 import 'fitting_detail_page.dart';
 import 'ship_selection_page.dart';
 
@@ -173,23 +174,15 @@ class _FitCard extends ConsumerWidget {
             child: Row(
               children: [
                 // 舰船图标
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: Image.network(
-                    'https://images.evetech.net/types/${fit.shipTypeId}/icon?size=64',
+                TypeIcon(
+                  typeId: fit.shipTypeId,
+                  size: 48,
+                  borderRadius: 6,
+                  fallback: Container(
                     width: 48,
                     height: 48,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      width: 48,
-                      height: 48,
-                      color: Colors.white.withAlpha(20),
-                      child: const Icon(
-                        Icons.rocket,
-                        color: Colors.white38,
-                        size: 28,
-                      ),
-                    ),
+                    color: Colors.white.withAlpha(20),
+                    child: const Icon(Icons.rocket, color: Colors.white38, size: 28),
                   ),
                 ),
                 const SizedBox(width: 12),

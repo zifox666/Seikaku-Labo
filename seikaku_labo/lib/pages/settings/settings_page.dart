@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../providers/image_provider.dart';
 import '../../providers/sde_provider.dart';
+import '../../services/image_manager.dart';
 
 /// 设置页面
 class SettingsPage extends ConsumerWidget {
@@ -12,6 +14,7 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final sdeState = ref.watch(sdeNotifierProvider);
+    final imageState = ref.watch(imagePackNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -21,6 +24,9 @@ class SettingsPage extends ConsumerWidget {
         children: [
           // SDE 数据库
           _buildSdeTile(context, ref, sdeState, l10n),
+          const Divider(),
+          // FSD 图片包
+          _buildFsdTile(context, ref, imageState),
           const Divider(),
           // 语言
           ListTile(
@@ -115,6 +121,89 @@ class SettingsPage extends ConsumerWidget {
     return ListTile(
       leading: const Icon(Icons.storage),
       title: Text(l10n.sdeDatabase),
+      subtitle: Text(subtitle),
+      trailing: trailing,
+    );
+  }
+
+  Widget _buildFsdTile(
+    BuildContext context,
+    WidgetRef ref,
+    ImagePackState state,
+  ) {
+    String subtitle;
+    Widget? trailing;
+
+    switch (state.status) {
+      case ImagePackStatus.checking:
+        subtitle = 'Checking for image pack updates...';
+        trailing = const SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        );
+        break;
+
+      case ImagePackStatus.downloading:
+        final pct = (state.progress * 100).toStringAsFixed(0);
+        final stage = state.progressStage ?? '';
+        subtitle = 'Downloading image pack... $pct% ($stage)';
+        trailing = SizedBox(
+          width: 40,
+          height: 40,
+          child: CircularProgressIndicator(
+            value: state.progress,
+            strokeWidth: 3,
+          ),
+        );
+        break;
+
+      case ImagePackStatus.ready:
+        subtitle = state.localTag != null
+            ? 'Image pack v${state.localTag}'
+            : 'Image pack loaded';
+        trailing = IconButton(
+          icon: const Icon(Icons.refresh),
+          tooltip: 'Check for updates',
+          onPressed: () {
+            ref.read(imagePackNotifierProvider.notifier).checkForUpdate();
+          },
+        );
+        break;
+
+      case ImagePackStatus.updateAvailable:
+        final remote = state.remoteRelease;
+        subtitle = remote != null
+            ? 'Update available: ${remote.tag} (${remote.formattedSize})'
+            : 'Update available';
+        trailing = FilledButton(
+          onPressed: () {
+            if (remote != null) {
+              ref.read(imagePackNotifierProvider.notifier).download(remote);
+            }
+          },
+          child: const Text('Update'),
+        );
+        break;
+
+      case ImagePackStatus.error:
+      case ImagePackStatus.noImages:
+        subtitle = state.errorMessage ?? 'Image pack not available';
+        trailing = IconButton(
+          icon: const Icon(Icons.refresh),
+          tooltip: 'Retry',
+          onPressed: () {
+            ref
+                .read(imagePackNotifierProvider.notifier)
+                .checkAndAutoDownload();
+          },
+        );
+        break;
+    }
+
+    return ListTile(
+      leading: const Icon(Icons.image),
+      title: const Text('Image Pack (FSD)'),
       subtitle: Text(subtitle),
       trailing: trailing,
     );

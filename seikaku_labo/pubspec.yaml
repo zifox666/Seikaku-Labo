@@ -64,3 +64,15 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+
+  assets:
+    - lib/pb2/dogmaAttributes.pb2
+    - lib/pb2/dogmaEffects.pb2
+    - lib/pb2/typeDogma.pb2
+    - lib/pb2/types.pb2
+    - assets/icon/ui/
+
+  fonts:
+    - family: W04
+      fonts:
+        - asset: assets/font/w04.ttf

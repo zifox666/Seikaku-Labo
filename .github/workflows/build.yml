@@ -27,27 +27,11 @@ jobs:
       - name: Download Seikaku Engine (Windows x86_64)
         shell: pwsh
         run: |
-          $version = "latest"
-          if ($version -eq "latest" -or $version -eq "") {
-            $baseUrl = "https://github.com/zifox666/Seikaku-Engine/releases/latest/download"
-          } else {
-            $baseUrl = "https://github.com/zifox666/Seikaku-Engine/releases/download/$version"
-          }
-
-          $url = "$baseUrl/seikaku-engine-windows-x86_64.zip"
+          $baseUrl = "https://github.com/zifox666/Seikaku-Engine/releases/latest/download"
+          $url = "$baseUrl/seikaku_engine-windows-x86_64.dll"
           Write-Host "Downloading: $url"
-          Invoke-WebRequest -Uri $url -OutFile engine-win.zip
-
-          Expand-Archive engine-win.zip -DestinationPath engine-win-out -Force
-
-          # 找到 DLL 无论它在压缩包的哪层目录
-          $dll = Get-ChildItem -Path engine-win-out -Filter seikaku_engine.dll -Recurse | Select-Object -First 1
-          if ($null -eq $dll) {
-            Write-Error "seikaku_engine.dll not found in archive"
-            exit 1
-          }
-          Write-Host "Found DLL: $($dll.FullName)"
-          Copy-Item $dll.FullName -Destination seikaku_labo\seikaku_engine.dll -Force
+          Invoke-WebRequest -Uri $url -OutFile seikaku_labo\seikaku_engine.dll
+          Write-Host "DLL downloaded to seikaku_labo\seikaku_engine.dll"
 
       - name: Flutter pub get
         working-directory: seikaku_labo
@@ -89,42 +73,16 @@ jobs:
 
       - name: Download Seikaku Engine (Android)
         run: |
-          VERSION="latest"
-          if [ -z "$VERSION" ] || [ "$VERSION" = "latest" ]; then
-            BASE_URL="https://github.com/zifox666/Seikaku-Engine/releases/latest/download"
-          else
-            BASE_URL="https://github.com/zifox666/Seikaku-Engine/releases/download/$VERSION"
-          fi
+          BASE_URL="https://github.com/zifox666/Seikaku-Engine/releases/latest/download"
+          ARCHIVE="libseikaku_engine-android-jniLibs.zip"
+          DEST="seikaku_labo/android/app/src/main/jniLibs"
 
-          echo "Base URL: $BASE_URL"
+          echo "Downloading $ARCHIVE..."
+          curl -fsSL "$BASE_URL/$ARCHIVE" -o "/tmp/$ARCHIVE"
 
-          declare -A ABI_MAP=(
-            ["arm64-v8a"]="seikaku-engine-android-arm64-v8a.tar.gz"
-            ["armeabi-v7a"]="seikaku-engine-android-armeabi-v7a.tar.gz"
-            ["x86_64"]="seikaku-engine-android-x86_64.tar.gz"
-          )
-
-          for ABI in "${!ABI_MAP[@]}"; do
-            ARCHIVE="${ABI_MAP[$ABI]}"
-            DEST="seikaku_labo/android/app/src/main/jniLibs/$ABI"
-            mkdir -p "$DEST"
-
-            echo "Downloading $ARCHIVE for $ABI..."
-            curl -fsSL "$BASE_URL/$ARCHIVE" -o "/tmp/$ARCHIVE"
-
-            TMP_DIR="/tmp/engine-$ABI"
-            mkdir -p "$TMP_DIR"
-            tar -xzf "/tmp/$ARCHIVE" -C "$TMP_DIR"
-
-            # 找到 libseikaku_engine.so 无论在哪层目录
-            SO_FILE=$(find "$TMP_DIR" -name "libseikaku_engine.so" | head -n 1)
-            if [ -z "$SO_FILE" ]; then
-              echo "ERROR: libseikaku_engine.so not found for $ABI"
-              exit 1
-            fi
-            echo "Found: $SO_FILE -> $DEST/"
-            cp "$SO_FILE" "$DEST/libseikaku_engine.so"
-          done
+          echo "Extracting to $DEST..."
+          unzip "/tmp/$ARCHIVE" -d "$DEST"
+          ls -la "$DEST"
 
       - name: Flutter pub get
         working-directory: seikaku_labo

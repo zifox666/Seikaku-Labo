@@ -5,6 +5,7 @@ import 'l10n/app_localizations.dart';
 import 'pages/splash/splash_page.dart';
 import 'providers/app_providers.dart';
 import 'providers/fitting_provider.dart';
+import 'providers/image_provider.dart';
 import 'providers/sde_provider.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
@@ -20,6 +21,8 @@ class SeikakuLaboApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sdeReady = ref.watch(sdeReadyProvider);
+    // 同步启动图片包检查（不阻塞 SDE 流程）
+    ref.watch(imagePackNotifierProvider);
 
     // SDE 未就绪时显示启动页（下载/检查/错误）
     // 就绪后显示主界面
