@@ -204,13 +204,11 @@ class _SlotTile extends ConsumerWidget {
       }
     }
 
-    final stateColor = _stateColor(module?.state);
-
     // ── 从引擎结果提取模块 max_state 及属性 ──
     ModuleState? maxState;
     Map<String, dynamic>? moduleEngineAttrs;
     if (module != null) {
-      final engineData = ref.watch(engineResultProvider).valueOrNull;
+      final engineData = ref.watch(engineResultProvider).asData?.value;
       if (engineData != null) {
         final items = engineData['items'] as List<dynamic>?;
         if (items != null) {
@@ -532,16 +530,6 @@ class _SlotTile extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  static Color _stateColor(ModuleState? state) {
-    return switch (state) {
-      ModuleState.passive => const Color(0xFF333333),
-      ModuleState.online => const Color(0xFF808080),
-      ModuleState.active => const Color(0xFF8AE04A),
-      ModuleState.overload => const Color(0xFFFD2D2D),
-      null => Colors.transparent,
-    };
   }
 
   /// 状态 → 图标下方叠加层文件名（ic_*）

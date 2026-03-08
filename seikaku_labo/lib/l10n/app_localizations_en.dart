@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabCharacter => 'Character';
 
   @override
+  String get tabSkills => 'Skills';
+
+  @override
   String get tabSettings => 'Settings';
 
   @override
@@ -201,6 +204,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String get characterPlaceholder => 'Character management coming soon';
 
   @override
+  String get captain => 'Captain';
+
+  @override
+  String get implants => 'Implants';
+
+  @override
+  String get boosters => 'Boosters';
+
+  @override
+  String get addImplant => 'Add';
+
+  @override
+  String get addBooster => 'Add';
+
+  @override
+  String get allSkillsLevel0 => 'All Skills Lv0';
+
+  @override
+  String get allSkillsLevel5 => 'All Skills Lv5';
+
+  @override
+  String get selectImplant => 'Select Implant';
+
+  @override
+  String get selectBooster => 'Select Booster';
+
+  @override
+  String get searchImplant => 'Search implant...';
+
+  @override
+  String get searchBooster => 'Search booster...';
+
+  @override
+  String implantSlot(String slot) {
+    return 'Slot $slot';
+  }
+
+  @override
+  String get noImplants => 'No implants';
+
+  @override
+  String get noBoosters => 'No boosters';
+
+  @override
+  String get importFromCharacter => 'Import from Character';
+
+  @override
+  String get activeImplants => 'Active Implants';
+
+  @override
+  String get jumpClone => 'Jump Clone';
+
+  @override
+  String get noActiveImplants => 'No active implants';
+
+  @override
+  String get importImplants => 'Import Implants';
+
+  @override
+  String importImplantsSuccess(String count) {
+    return 'Imported $count implants';
+  }
+
+  @override
+  String get loadingImplants => 'Loading implants...';
+
+  @override
+  String get loadImplantsFailed => 'Failed to load implants';
+
+  @override
+  String get clearAllImplants => 'Clear All Implants';
+
+  @override
   String get statsPlaceholder => 'Stats will show after engine calculation';
 
   @override
@@ -358,4 +434,314 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noModulesFound => 'No modules found';
+
+  @override
+  String get loginTitle => 'Login';
+
+  @override
+  String get loginSsoTitle => 'EVE SSO Login';
+
+  @override
+  String get loginSsoDescription =>
+      'Authenticate via EVE Online Single Sign-On';
+
+  @override
+  String get loginWithSso => 'Login with SSO';
+
+  @override
+  String get loginOrToken => 'Or enter Token';
+
+  @override
+  String get loginTokenHint => 'Paste JWT Token';
+
+  @override
+  String get loginPasteToken => 'Paste';
+
+  @override
+  String get loginWithToken => 'Login with Token';
+
+  @override
+  String get loginAdvanced => 'Advanced Options';
+
+  @override
+  String get serverUrlTitle => 'Backend URL';
+
+  @override
+  String get serverUrlHint => 'e.g. http://127.0.0.1:8080/api/v1';
+
+  @override
+  String get serverUrlSaved => 'URL saved';
+
+  @override
+  String get serverUrlReset => 'Reset to default';
+
+  @override
+  String get serverUrlDialogTitle => 'Set Backend URL';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get characterNotLoggedIn => 'Please log in first';
+
+  @override
+  String get characterBind => 'Bind Character';
+
+  @override
+  String get characterBindFailed => 'Failed to bind character';
+
+  @override
+  String get characterBindSuccess => 'Character bound successfully';
+
+  @override
+  String get characterSetPrimary => 'Set as Primary';
+
+  @override
+  String get characterSetPrimaryFailed => 'Failed to set primary character';
+
+  @override
+  String get characterUnbind => 'Unbind';
+
+  @override
+  String characterUnbindConfirm(String name) {
+    return 'Unbind character \"$name\"?';
+  }
+
+  @override
+  String get characterUnbindFailed => 'Failed to unbind character';
+
+  @override
+  String get characterNoCharacters => 'No characters bound';
+
+  @override
+  String get characterPrimary => 'Primary';
+
+  @override
+  String get notificationTitle => 'Notifications';
+
+  @override
+  String get notificationMarkAllRead => 'Mark all read';
+
+  @override
+  String get notificationEmpty => 'No notifications';
+
+  @override
+  String get walletTitle => 'Wallet';
+
+  @override
+  String get walletBalance => 'Balance';
+
+  @override
+  String get walletTransactions => 'Transactions';
+
+  @override
+  String get walletNoTransactions => 'No transactions';
+
+  @override
+  String get fleetTitle => 'Fleets';
+
+  @override
+  String get fleetEmpty => 'No fleets';
+
+  @override
+  String get fleetUntitled => 'Untitled Fleet';
+
+  @override
+  String get fleetDetail => 'Fleet Detail';
+
+  @override
+  String get fleetInfo => 'Info';
+
+  @override
+  String get fleetMembers => 'Members';
+
+  @override
+  String get fleetPap => 'PAP';
+
+  @override
+  String get fleetName => 'Fleet Name';
+
+  @override
+  String get fleetStatus => 'Status';
+
+  @override
+  String get fleetImportance => 'Importance';
+
+  @override
+  String get fleetStartTime => 'Start Time';
+
+  @override
+  String get fleetEndTime => 'End Time';
+
+  @override
+  String get fleetDescription => 'Description';
+
+  @override
+  String get fleetNoMembers => 'No members';
+
+  @override
+  String get fleetNoPap => 'No PAP records';
+
+  @override
+  String get shopTitle => 'Shop';
+
+  @override
+  String get shopProducts => 'Products';
+
+  @override
+  String get shopOrders => 'My Orders';
+
+  @override
+  String get shopRedeemCodes => 'Redeem Codes';
+
+  @override
+  String get shopEmpty => 'No products';
+
+  @override
+  String get shopNoOrders => 'No orders';
+
+  @override
+  String get shopNoRedeemCodes => 'No redeem codes';
+
+  @override
+  String get shopBuyConfirmTitle => 'Confirm Purchase';
+
+  @override
+  String shopBuyConfirm(String name, String price) {
+    return 'Buy \"$name\" for $price?';
+  }
+
+  @override
+  String get shopBuy => 'Buy';
+
+  @override
+  String get shopBuySuccess => 'Purchase successful';
+
+  @override
+  String get shopBuyFailed => 'Purchase failed';
+
+  @override
+  String get srpTitle => 'SRP';
+
+  @override
+  String get srpPrices => 'Ship Prices';
+
+  @override
+  String get srpMyApplications => 'My Applications';
+
+  @override
+  String get srpMyKillmails => 'My Killmails';
+
+  @override
+  String get srpSearchShip => 'Search ship...';
+
+  @override
+  String get srpNoPrices => 'No ship prices';
+
+  @override
+  String get srpNoApplications => 'No SRP applications';
+
+  @override
+  String get srpNoKillmails => 'No killmails';
+
+  @override
+  String get importImplantSet => 'Import Set?';
+
+  @override
+  String importImplantSetDesc(String series, String count) {
+    return 'Detected \"$series\" set ($count implants for slots 1-6). Import the full set?';
+  }
+
+  @override
+  String get importImplantSetJustOne => 'Just This One';
+
+  @override
+  String get importImplantSetAll => 'Import Full Set';
+
+  @override
+  String get tabImplants => 'Implants';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get jumpClones => 'Jump Clones';
+
+  @override
+  String get pleaseLogin => 'Please log in first';
+
+  @override
+  String get selectCharacter => 'Select Character';
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
+  String get homeStation => 'Home Station';
+
+  @override
+  String get currentActiveImplants => 'Current Active Implants';
+
+  @override
+  String get jumpFatigueCooldown => 'Clone Jump Timer';
+
+  @override
+  String get cloneReady => 'Clone Ready';
+
+  @override
+  String get lastJump => 'Last Jump';
+
+  @override
+  String get lastCloneJump => 'Last Clone Jump';
+
+  @override
+  String get tabNpcKills => 'NPC Kills';
+
+  @override
+  String get npcKillsAllChars => 'All Characters';
+
+  @override
+  String get npcKillsLoadFailed => 'Failed to load NPC kills';
+
+  @override
+  String get npcKillsBounty => 'Bounty';
+
+  @override
+  String get npcKillsEss => 'ESS Income';
+
+  @override
+  String get npcKillsTax => 'Tax';
+
+  @override
+  String get npcKillsActualIncome => 'Actual Income';
+
+  @override
+  String get npcKillsTotalRecords => 'Total Records';
+
+  @override
+  String get npcKillsEstimatedHours => 'Est. Hours';
+
+  @override
+  String get npcKillsByNpc => 'By NPC';
+
+  @override
+  String get npcKillsBySystem => 'By System';
+
+  @override
+  String get npcKillsNoData => 'No data';
+
+  @override
+  String get npcKillsNpcName => 'NPC Name';
+
+  @override
+  String get npcKillsCount => 'Kills';
+
+  @override
+  String get npcKillsSystemName => 'System';
+
+  @override
+  String get npcKillsAmount => 'Amount';
+
+  @override
+  String get npcKillsJournal => 'Journal';
 }

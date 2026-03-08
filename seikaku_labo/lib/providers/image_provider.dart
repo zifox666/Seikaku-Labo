@@ -50,15 +50,12 @@ enum ImagePackStatus {
 }
 
 /// FSD 图片包状态管理 Notifier
-class ImagePackNotifier extends StateNotifier<ImagePackState> {
-  ImagePackNotifier() : super(const ImagePackState()) {
-    _initCheck();
-  }
-
-  /// 启动时自动检查，若无图片包则自动下载
-  Future<void> _initCheck() async {
-    state = state.copyWith(status: ImagePackStatus.checking);
-    await checkAndAutoDownload();
+class ImagePackNotifier extends Notifier<ImagePackState> {
+  @override
+  ImagePackState build() {
+    // 必须延迟到下一个 microtask，否则 build() 返回前 state 未初始化
+    Future.microtask(checkAndAutoDownload);
+    return const ImagePackState();
   }
 
   /// 检查更新，首次自动下载
@@ -193,9 +190,7 @@ class ImagePackNotifier extends StateNotifier<ImagePackState> {
 
 /// FSD 图片包状态 Provider
 final imagePackNotifierProvider =
-    StateNotifierProvider<ImagePackNotifier, ImagePackState>(
-  (_) => ImagePackNotifier(),
-);
+    NotifierProvider<ImagePackNotifier, ImagePackState>(ImagePackNotifier.new);
 
 /// 图片包是否已就绪（可用于其他页面展示图标的判断）
 final imagePackReadyProvider = Provider<bool>((ref) {

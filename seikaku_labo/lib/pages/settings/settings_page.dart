@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../providers/api_providers.dart';
 import '../../providers/image_provider.dart';
 import '../../providers/sde_provider.dart';
-import '../../services/image_manager.dart';
+import '../../widgets/shell_scaffold.dart';
 
 /// 设置页面
 class SettingsPage extends ConsumerWidget {
@@ -18,6 +19,9 @@ class SettingsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: MediaQuery.sizeOf(context).width < 720
+            ? const DrawerMenuButton()
+            : null,
         title: Text(l10n.settingsTitle),
       ),
       body: ListView(
@@ -38,9 +42,81 @@ class SettingsPage extends ConsumerWidget {
             },
           ),
           const Divider(),
+          // 后端地址
+          _buildServerUrlTile(context, ref, l10n),
+          const Divider(),
         ],
       ),
     );
+  }
+
+  Widget _buildServerUrlTile(
+      BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    final currentUrl = ref.watch(serverUrlProvider);
+    return ListTile(
+      leading: const Icon(Icons.dns_outlined),
+      title: Text(l10n.serverUrlTitle),
+      subtitle: Text(
+        currentUrl,
+        style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: const Icon(Icons.edit_outlined),
+      onTap: () => _showServerUrlDialog(context, ref, l10n, currentUrl),
+    );
+  }
+
+  Future<void> _showServerUrlDialog(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    String currentUrl,
+  ) async {
+    final controller = TextEditingController(text: currentUrl);
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.serverUrlDialogTitle),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: l10n.serverUrlHint,
+            border: const OutlineInputBorder(),
+          ),
+          style: const TextStyle(fontSize: 13, fontFamily: 'monospace'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await ref.read(serverUrlProvider.notifier).reset();
+              controller.text = ref.read(serverUrlProvider);
+            },
+            child: Text(l10n.serverUrlReset),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final url = controller.text.trim();
+              if (url.isNotEmpty) {
+                await ref.read(serverUrlProvider.notifier).setUrl(url);
+              }
+              if (ctx.mounted) Navigator.pop(ctx);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.serverUrlSaved)),
+                );
+              }
+            },
+            child: Text(l10n.ok),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
   }
 
   Widget _buildSdeTile(

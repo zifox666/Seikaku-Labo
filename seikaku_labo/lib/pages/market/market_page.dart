@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/shell_scaffold.dart';
 
 /// 市场浏览页面 - 占位
 class MarketPage extends StatelessWidget {
@@ -11,6 +12,9 @@ class MarketPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: MediaQuery.sizeOf(context).width < 720
+            ? const DrawerMenuButton()
+            : null,
         title: Text(l10n.marketTitle),
       ),
       body: Center(

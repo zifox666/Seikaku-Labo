@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/shell_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -26,6 +27,9 @@ class FittingPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: MediaQuery.sizeOf(context).width < 720
+            ? const DrawerMenuButton()
+            : null,
         title: Text(l10n.fittingTitle),
       ),
       body: savedFits.isEmpty

@@ -50,18 +50,15 @@ enum SdeStatus {
 }
 
 /// SDE 状态管理 Notifier
-class SdeNotifier extends StateNotifier<SdeState> {
-  final SdeService _sdeService;
-
-  SdeNotifier(this._sdeService) : super(const SdeState()) {
-    _initCheck();
+class SdeNotifier extends Notifier<SdeState> {
+  @override
+  SdeState build() {
+    // 必须延迟到下一个 microtask，否则 build() 返回前 state 未初始化
+    Future.microtask(checkAndAutoDownload);
+    return const SdeState();
   }
 
-  /// 启动时自动检查
-  Future<void> _initCheck() async {
-    state = state.copyWith(status: SdeStatus.checking);
-    await checkAndAutoDownload();
-  }
+  SdeService get _sdeService => ref.read(sdeServiceProvider);
 
   /// 检查更新，首次自动下载
   Future<void> checkAndAutoDownload() async {
@@ -211,10 +208,7 @@ class SdeNotifier extends StateNotifier<SdeState> {
 
 /// SDE 状态 Provider
 final sdeNotifierProvider =
-    StateNotifierProvider<SdeNotifier, SdeState>((ref) {
-  final sdeService = ref.watch(sdeServiceProvider);
-  return SdeNotifier(sdeService);
-});
+    NotifierProvider<SdeNotifier, SdeState>(SdeNotifier.new);
 
 /// SDE 数据库服务 Provider
 final sdeServiceProvider = Provider<SdeService>((ref) {

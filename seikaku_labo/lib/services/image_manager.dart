@@ -243,7 +243,7 @@ class ImageManager {
     final result = <MapEntry<String, Uint8List>>[];
     for (final file in archive.files) {
       if (file.isFile) {
-        result.add(MapEntry(file.name, file.content as Uint8List));
+        result.add(MapEntry(file.name, file.content));
       }
     }
     return result;

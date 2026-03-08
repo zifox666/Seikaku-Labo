@@ -16,6 +16,10 @@
   "@tabCharacter": {
     "description": "Bottom navigation tab for character info"
   },
+  "tabSkills": "Skills",
+  "@tabSkills": {
+    "description": "Bottom navigation tab for skills and skill queue"
+  },
   "tabSettings": "Settings",
   "@tabSettings": {
     "description": "Bottom navigation tab for settings"
@@ -256,6 +260,104 @@
   "@characterPlaceholder": {
     "description": "Character tab placeholder"
   },
+  "captain": "Captain",
+  "@captain": {
+    "description": "Captain section label"
+  },
+  "implants": "Implants",
+  "@implants": {
+    "description": "Implants section label"
+  },
+  "boosters": "Boosters",
+  "@boosters": {
+    "description": "Boosters section label"
+  },
+  "addImplant": "Add",
+  "@addImplant": {
+    "description": "Add implant button"
+  },
+  "addBooster": "Add",
+  "@addBooster": {
+    "description": "Add booster button"
+  },
+  "allSkillsLevel0": "All Skills Lv0",
+  "@allSkillsLevel0": {
+    "description": "Default character with all skills at level 0"
+  },
+  "allSkillsLevel5": "All Skills Lv5",
+  "@allSkillsLevel5": {
+    "description": "Default character with all skills at level 5"
+  },
+  "selectImplant": "Select Implant",
+  "@selectImplant": {
+    "description": "Implant selection page title"
+  },
+  "selectBooster": "Select Booster",
+  "@selectBooster": {
+    "description": "Booster selection page title"
+  },
+  "searchImplant": "Search implant...",
+  "@searchImplant": {
+    "description": "Implant search hint"
+  },
+  "searchBooster": "Search booster...",
+  "@searchBooster": {
+    "description": "Booster search hint"
+  },
+  "implantSlot": "Slot {slot}",
+  "@implantSlot": {
+    "description": "Implant slot label",
+    "placeholders": {
+      "slot": { "type": "String" }
+    }
+  },
+  "noImplants": "No implants",
+  "@noImplants": {
+    "description": "Empty implants placeholder"
+  },
+  "noBoosters": "No boosters",
+  "@noBoosters": {
+    "description": "Empty boosters placeholder"
+  },
+  "importFromCharacter": "Import from Character",
+  "@importFromCharacter": {
+    "description": "Import implants from character"
+  },
+  "activeImplants": "Active Implants",
+  "@activeImplants": {
+    "description": "Currently active implants"
+  },
+  "jumpClone": "Jump Clone",
+  "@jumpClone": {
+    "description": "Jump clone label"
+  },
+  "noActiveImplants": "No active implants",
+  "@noActiveImplants": {
+    "description": "No active implants placeholder"
+  },
+  "importImplants": "Import Implants",
+  "@importImplants": {
+    "description": "Import implants page title"
+  },
+  "importImplantsSuccess": "Imported {count} implants",
+  "@importImplantsSuccess": {
+    "description": "Implant import success message",
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "loadingImplants": "Loading implants...",
+  "@loadingImplants": {
+    "description": "Loading implants status"
+  },
+  "loadImplantsFailed": "Failed to load implants",
+  "@loadImplantsFailed": {
+    "description": "Load implants error"
+  },
+  "clearAllImplants": "Clear All Implants",
+  "@clearAllImplants": {
+    "description": "Clear all implants button"
+  },
   "statsPlaceholder": "Stats will show after engine calculation",
   "@statsPlaceholder": {
     "description": "Stats tab placeholder"
@@ -354,5 +456,163 @@
       "total": { "type": "String" }
     }
   },
-  "noModulesFound": "No modules found"
+  "noModulesFound": "No modules found",
+
+  "loginTitle": "Login",
+  "loginSsoTitle": "EVE SSO Login",
+  "loginSsoDescription": "Authenticate via EVE Online Single Sign-On",
+  "loginWithSso": "Login with SSO",
+  "loginOrToken": "Or enter Token",
+  "loginTokenHint": "Paste JWT Token",
+  "loginPasteToken": "Paste",
+  "loginWithToken": "Login with Token",
+
+  "loginAdvanced": "Advanced Options",
+  "serverUrlTitle": "Backend URL",
+  "serverUrlHint": "e.g. http://127.0.0.1:8080/api/v1",
+  "serverUrlSaved": "URL saved",
+  "serverUrlReset": "Reset to default",
+  "serverUrlDialogTitle": "Set Backend URL",
+  "ok": "OK",
+
+  "characterNotLoggedIn": "Please log in first",
+  "characterBind": "Bind Character",
+  "characterBindFailed": "Failed to bind character",
+  "characterBindSuccess": "Character bound successfully",
+  "characterSetPrimary": "Set as Primary",
+  "characterSetPrimaryFailed": "Failed to set primary character",
+  "characterUnbind": "Unbind",
+  "characterUnbindConfirm": "Unbind character \"{name}\"?",
+  "@characterUnbindConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "characterUnbindFailed": "Failed to unbind character",
+  "characterNoCharacters": "No characters bound",
+  "characterPrimary": "Primary",
+
+  "notificationTitle": "Notifications",
+  "notificationMarkAllRead": "Mark all read",
+  "notificationEmpty": "No notifications",
+
+  "walletTitle": "Wallet",
+  "walletBalance": "Balance",
+  "walletTransactions": "Transactions",
+  "walletNoTransactions": "No transactions",
+
+  "fleetTitle": "Fleets",
+  "fleetEmpty": "No fleets",
+  "fleetUntitled": "Untitled Fleet",
+  "fleetDetail": "Fleet Detail",
+  "fleetInfo": "Info",
+  "fleetMembers": "Members",
+  "fleetPap": "PAP",
+  "fleetName": "Fleet Name",
+  "fleetStatus": "Status",
+  "fleetImportance": "Importance",
+  "fleetStartTime": "Start Time",
+  "fleetEndTime": "End Time",
+  "fleetDescription": "Description",
+  "fleetNoMembers": "No members",
+  "fleetNoPap": "No PAP records",
+
+  "shopTitle": "Shop",
+  "shopProducts": "Products",
+  "shopOrders": "My Orders",
+  "shopRedeemCodes": "Redeem Codes",
+  "shopEmpty": "No products",
+  "shopNoOrders": "No orders",
+  "shopNoRedeemCodes": "No redeem codes",
+  "shopBuyConfirmTitle": "Confirm Purchase",
+  "shopBuyConfirm": "Buy \"{name}\" for {price}?",
+  "@shopBuyConfirm": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "price": { "type": "String" }
+    }
+  },
+  "shopBuy": "Buy",
+  "shopBuySuccess": "Purchase successful",
+  "shopBuyFailed": "Purchase failed",
+
+  "srpTitle": "SRP",
+  "srpPrices": "Ship Prices",
+  "srpMyApplications": "My Applications",
+  "srpMyKillmails": "My Killmails",
+  "srpSearchShip": "Search ship...",
+  "srpNoPrices": "No ship prices",
+  "srpNoApplications": "No SRP applications",
+  "srpNoKillmails": "No killmails",
+
+  "importImplantSet": "Import Set?",
+  "importImplantSetDesc": "Detected \"{series}\" set ({count} implants for slots 1-6). Import the full set?",
+  "@importImplantSetDesc": {
+    "placeholders": {
+      "series": { "type": "String" },
+      "count": { "type": "String" }
+    }
+  },
+  "importImplantSetJustOne": "Just This One",
+  "importImplantSetAll": "Import Full Set",
+
+  "tabImplants": "Implants",
+  "@tabImplants": { "description": "Sidebar label for implants & clones" },
+  "refresh": "Refresh",
+  "@refresh": { "description": "Refresh button tooltip" },
+  "jumpClones": "Jump Clones",
+  "@jumpClones": { "description": "Jump clones section title" },
+  "pleaseLogin": "Please log in first",
+  "@pleaseLogin": { "description": "Shown when not logged in" },
+  "selectCharacter": "Select Character",
+  "@selectCharacter": { "description": "Character selector placeholder" },
+  "loading": "Loading...",
+  "@loading": { "description": "Generic loading label" },
+  "homeStation": "Home Station",
+  "@homeStation": { "description": "Home station section" },
+  "currentActiveImplants": "Current Active Implants",
+  "@currentActiveImplants": { "description": "Active implants section" },
+  "jumpFatigueCooldown": "Clone Jump Timer",
+  "@jumpFatigueCooldown": { "description": "Jump fatigue cooldown label" },
+  "cloneReady": "Clone Ready",
+  "@cloneReady": { "description": "Clone is ready to jump" },
+  "lastJump": "Last Jump",
+  "@lastJump": { "description": "Last jump timestamp label" },
+  "lastCloneJump": "Last Clone Jump",
+  "@lastCloneJump": { "description": "Last clone jump timestamp label" },
+
+  "tabNpcKills": "NPC Kills",
+  "@tabNpcKills": { "description": "Sidebar label for NPC kills report" },
+  "npcKillsAllChars": "All Characters",
+  "@npcKillsAllChars": { "description": "Dropdown option for all characters" },
+  "npcKillsLoadFailed": "Failed to load NPC kills",
+  "@npcKillsLoadFailed": { "description": "Error message" },
+  "npcKillsBounty": "Bounty",
+  "@npcKillsBounty": { "description": "NPC bounty total" },
+  "npcKillsEss": "ESS Income",
+  "@npcKillsEss": { "description": "ESS income total" },
+  "npcKillsTax": "Tax",
+  "@npcKillsTax": { "description": "Tax total" },
+  "npcKillsActualIncome": "Actual Income",
+  "@npcKillsActualIncome": { "description": "Actual income total" },
+  "npcKillsTotalRecords": "Total Records",
+  "@npcKillsTotalRecords": { "description": "Total record count" },
+  "npcKillsEstimatedHours": "Est. Hours",
+  "@npcKillsEstimatedHours": { "description": "Estimated hours" },
+  "npcKillsByNpc": "By NPC",
+  "@npcKillsByNpc": { "description": "Section: by NPC" },
+  "npcKillsBySystem": "By System",
+  "@npcKillsBySystem": { "description": "Section: by system" },
+  "npcKillsNoData": "No data",
+  "@npcKillsNoData": { "description": "Empty state" },
+  "npcKillsNpcName": "NPC Name",
+  "@npcKillsNpcName": { "description": "NPC name column" },
+  "npcKillsCount": "Kills",
+  "@npcKillsCount": { "description": "Kill count column" },
+  "npcKillsSystemName": "System",
+  "@npcKillsSystemName": { "description": "System name column" },
+  "npcKillsAmount": "Amount",
+  "@npcKillsAmount": { "description": "Amount column" },
+  "npcKillsJournal": "Journal",
+  "@npcKillsJournal": { "description": "Journal section" }
 }

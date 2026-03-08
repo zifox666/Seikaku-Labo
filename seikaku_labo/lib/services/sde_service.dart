@@ -638,4 +638,293 @@ class SdeService {
       throw StateError('SDE database not loaded. Call open() first.');
     }
   }
+
+  // ── 植入体查询 ─────────────────────────────────────────────────────────
+
+  /// 获取植入体的槽位号（attributeID = 331 implantness）
+  /// 返回 1-10 的槽位号，找不到返回 null
+  int? getImplantSlot(int typeId) {
+    _ensureLoaded();
+    final result = _db!.select('''
+      SELECT CAST(COALESCE(dta."valueFloat", dta."valueInt") AS INTEGER) AS slot
+      FROM "dgmTypeAttributes" dta
+      WHERE dta."typeID" = $typeId AND dta."attributeID" = 331
+      LIMIT 1
+    ''');
+    if (result.isEmpty) return null;
+    return result.first['slot'] as int?;
+  }
+
+  /// 获取所有植入体（categoryID = 20，拥有 attributeID = 331 的 implantness 属性）
+  /// 返回 [{typeID, typeName, slot}]
+  List<Map<String, dynamic>> getImplants({String lang = 'en'}) {
+    _ensureLoaded();
+    final typeTcId = _getTcId('invTypes', 'typeName');
+    final result = _db!.select('''
+      SELECT t."typeID", t."typeName",
+             CAST(COALESCE(dta."valueFloat", dta."valueInt") AS INTEGER) AS slot
+        ${typeTcId != null ? ', tr."text" AS "localTypeName"' : ''}
+      FROM "invTypes" t
+      JOIN "invGroups" g ON t."groupID" = g."groupID"
+      JOIN "dgmTypeAttributes" dta ON dta."typeID" = t."typeID" AND dta."attributeID" = 331
+      ${typeTcId != null ? 'LEFT JOIN "trnTranslations" tr ON tr."tcID" = $typeTcId AND tr."keyID" = t."typeID" AND tr."languageID" = \'$lang\'' : ''}
+      WHERE g."categoryID" = 20
+        AND t.published = 1
+      ORDER BY slot, t."typeName"
+    ''');
+    return result
+        .map((row) => {
+              'typeID': row['typeID'],
+              'typeName': row['localTypeName'] ?? row['typeName'],
+              'slot': row['slot'],
+            })
+        .toList();
+  }
+
+  /// 按槽位获取植入体
+  List<Map<String, dynamic>> getImplantsBySlot(int slot, {String lang = 'en'}) {
+    _ensureLoaded();
+    final typeTcId = _getTcId('invTypes', 'typeName');
+    final result = _db!.select('''
+      SELECT t."typeID", t."typeName"
+        ${typeTcId != null ? ', tr."text" AS "localTypeName"' : ''}
+      FROM "invTypes" t
+      JOIN "invGroups" g ON t."groupID" = g."groupID"
+      JOIN "dgmTypeAttributes" dta ON dta."typeID" = t."typeID" AND dta."attributeID" = 331
+      ${typeTcId != null ? 'LEFT JOIN "trnTranslations" tr ON tr."tcID" = $typeTcId AND tr."keyID" = t."typeID" AND tr."languageID" = \'$lang\'' : ''}
+      WHERE g."categoryID" = 20
+        AND t.published = 1
+        AND CAST(COALESCE(dta."valueFloat", dta."valueInt") AS INTEGER) = $slot
+      ORDER BY t."typeName"
+    ''');
+    return result
+        .map((row) => {
+              'typeID': row['typeID'],
+              'typeName': row['localTypeName'] ?? row['typeName'],
+            })
+        .toList();
+  }
+
+  /// 搜索植入体
+  List<Map<String, dynamic>> searchImplants(String keyword, {String lang = 'en'}) {
+    _ensureLoaded();
+    final typeTcId = _getTcId('invTypes', 'typeName');
+    final safeKeyword = keyword.replaceAll("'", "''");
+    final result = _db!.select('''
+      SELECT t."typeID", t."typeName",
+             CAST(COALESCE(dta."valueFloat", dta."valueInt") AS INTEGER) AS slot
+        ${typeTcId != null ? ', tr."text" AS "localTypeName"' : ''}
+      FROM "invTypes" t
+      JOIN "invGroups" g ON t."groupID" = g."groupID"
+      JOIN "dgmTypeAttributes" dta ON dta."typeID" = t."typeID" AND dta."attributeID" = 331
+      ${typeTcId != null ? 'LEFT JOIN "trnTranslations" tr ON tr."tcID" = $typeTcId AND tr."keyID" = t."typeID" AND tr."languageID" = \'$lang\'' : ''}
+      WHERE g."categoryID" = 20
+        AND t.published = 1
+        AND (t."typeName" LIKE '%$safeKeyword%'
+             ${typeTcId != null ? 'OR tr."text" LIKE \'%$safeKeyword%\'' : ''})
+      ORDER BY slot, t."typeName"
+      LIMIT 50
+    ''');
+    return result
+        .map((row) => {
+              'typeID': row['typeID'],
+              'typeName': row['localTypeName'] ?? row['typeName'],
+              'slot': row['slot'],
+            })
+        .toList();
+  }
+
+  /// 检查植入体是否属于套装（如 High-grade Ascendancy 系列，1-6 号位）
+  /// 返回 {'seriesName': String, 'members': List<Map>} 或 null
+  Map<String, dynamic>? getImplantSetForType(int typeId, {String lang = 'en'}) {
+    _ensureLoaded();
+    // 获取英文名用于模式匹配
+    final nameResult = _db!.select('''
+      SELECT t."typeName"
+      FROM "invTypes" t
+      WHERE t."typeID" = $typeId
+      LIMIT 1
+    ''');
+    if (nameResult.isEmpty) return null;
+
+    final englishName = nameResult.first['typeName'] as String;
+
+    // 检查是否以希腊字母后缀结尾（套装 1-6 号位标志）
+    const suffixes = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Omega'];
+    String? matchedSuffix;
+    for (final s in suffixes) {
+      if (englishName.endsWith(' $s')) {
+        matchedSuffix = s;
+        break;
+      }
+    }
+    if (matchedSuffix == null) return null;
+
+    // 提取系列前缀，如 "High-grade Ascendancy"
+    final prefix = englishName.substring(
+      0,
+      englishName.length - matchedSuffix.length - 1,
+    );
+
+    // 查找所有系列成员
+    final typeTcId = _getTcId('invTypes', 'typeName');
+    final members = <Map<String, dynamic>>[];
+    for (final suffix in suffixes) {
+      final fullName = '${prefix.replaceAll("'", "''")} $suffix';
+      final rows = _db!.select('''
+        SELECT t."typeID", t."typeName",
+               CAST(COALESCE(dta."valueFloat", dta."valueInt") AS INTEGER) AS slot
+          ${typeTcId != null ? ', tr."text" AS "localTypeName"' : ''}
+        FROM "invTypes" t
+        JOIN "invGroups" g ON t."groupID" = g."groupID"
+        JOIN "dgmTypeAttributes" dta ON dta."typeID" = t."typeID" AND dta."attributeID" = 331
+        ${typeTcId != null ? 'LEFT JOIN "trnTranslations" tr ON tr."tcID" = $typeTcId AND tr."keyID" = t."typeID" AND tr."languageID" = \'$lang\'' : ''}
+        WHERE g."categoryID" = 20
+          AND t.published = 1
+          AND t."typeName" = '$fullName'
+        LIMIT 1
+      ''');
+      if (rows.isNotEmpty) {
+        members.add({
+          'typeID': rows.first['typeID'],
+          'typeName': rows.first['localTypeName'] ?? rows.first['typeName'],
+          'slot': rows.first['slot'],
+        });
+      }
+    }
+
+    // 至少找到 2 个成员才算套装
+    if (members.length < 2) return null;
+    return {'seriesName': prefix, 'members': members};
+  }
+
+  // ── 增效剂查询 ─────────────────────────────────────────────────────────
+
+  /// 获取所有增效剂（categoryID = 20，拥有 attributeID = 1087 的 boosterness 属性）
+  List<Map<String, dynamic>> getBoosters({String lang = 'en'}) {
+    _ensureLoaded();
+    final typeTcId = _getTcId('invTypes', 'typeName');
+    final result = _db!.select('''
+      SELECT t."typeID", t."typeName",
+             CAST(COALESCE(dta."valueFloat", dta."valueInt") AS INTEGER) AS slot
+        ${typeTcId != null ? ', tr."text" AS "localTypeName"' : ''}
+      FROM "invTypes" t
+      JOIN "invGroups" g ON t."groupID" = g."groupID"
+      JOIN "dgmTypeAttributes" dta ON dta."typeID" = t."typeID" AND dta."attributeID" = 1087
+      ${typeTcId != null ? 'LEFT JOIN "trnTranslations" tr ON tr."tcID" = $typeTcId AND tr."keyID" = t."typeID" AND tr."languageID" = \'$lang\'' : ''}
+      WHERE g."categoryID" = 20
+        AND t.published = 1
+      ORDER BY slot, t."typeName"
+    ''');
+    return result
+        .map((row) => {
+              'typeID': row['typeID'],
+              'typeName': row['localTypeName'] ?? row['typeName'],
+              'slot': row['slot'],
+            })
+        .toList();
+  }
+
+  /// 按槽位获取增效剂
+  List<Map<String, dynamic>> getBoostersBySlot(int slot, {String lang = 'en'}) {
+    _ensureLoaded();
+    final typeTcId = _getTcId('invTypes', 'typeName');
+    final result = _db!.select('''
+      SELECT t."typeID", t."typeName"
+        ${typeTcId != null ? ', tr."text" AS "localTypeName"' : ''}
+      FROM "invTypes" t
+      JOIN "invGroups" g ON t."groupID" = g."groupID"
+      JOIN "dgmTypeAttributes" dta ON dta."typeID" = t."typeID" AND dta."attributeID" = 1087
+      ${typeTcId != null ? 'LEFT JOIN "trnTranslations" tr ON tr."tcID" = $typeTcId AND tr."keyID" = t."typeID" AND tr."languageID" = \'$lang\'' : ''}
+      WHERE g."categoryID" = 20
+        AND t.published = 1
+        AND CAST(COALESCE(dta."valueFloat", dta."valueInt") AS INTEGER) = $slot
+      ORDER BY t."typeName"
+    ''');
+    return result
+        .map((row) => {
+              'typeID': row['typeID'],
+              'typeName': row['localTypeName'] ?? row['typeName'],
+            })
+        .toList();
+  }
+
+  /// 搜索增效剂
+  List<Map<String, dynamic>> searchBoosters(String keyword, {String lang = 'en'}) {
+    _ensureLoaded();
+    final typeTcId = _getTcId('invTypes', 'typeName');
+    final safeKeyword = keyword.replaceAll("'", "''");
+    final result = _db!.select('''
+      SELECT t."typeID", t."typeName",
+             CAST(COALESCE(dta."valueFloat", dta."valueInt") AS INTEGER) AS slot
+        ${typeTcId != null ? ', tr."text" AS "localTypeName"' : ''}
+      FROM "invTypes" t
+      JOIN "invGroups" g ON t."groupID" = g."groupID"
+      JOIN "dgmTypeAttributes" dta ON dta."typeID" = t."typeID" AND dta."attributeID" = 1087
+      ${typeTcId != null ? 'LEFT JOIN "trnTranslations" tr ON tr."tcID" = $typeTcId AND tr."keyID" = t."typeID" AND tr."languageID" = \'$lang\'' : ''}
+      WHERE g."categoryID" = 20
+        AND t.published = 1
+        AND (t."typeName" LIKE '%$safeKeyword%'
+             ${typeTcId != null ? 'OR tr."text" LIKE \'%$safeKeyword%\'' : ''})
+      ORDER BY slot, t."typeName"
+      LIMIT 50
+    ''');
+    return result
+        .map((row) => {
+              'typeID': row['typeID'],
+              'typeName': row['localTypeName'] ?? row['typeName'],
+              'slot': row['slot'],
+            })
+        .toList();
+  }
+
+  // ── 技能查询 ──────────────────────────────────────────────────────────
+
+  /// 获取所有技能类型（categoryID = 16），按分组排序
+  List<Map<String, dynamic>> getSkillTypes({String lang = 'en'}) {
+    _ensureLoaded();
+    final typeTcId = _getTcId('invTypes', 'typeName');
+    final groupTcId = _getTcId('invGroups', 'groupName');
+    final result = _db!.select('''
+      SELECT t."typeID", t."typeName", g."groupID", g."groupName"
+        ${typeTcId != null ? ', trType."text" AS "localTypeName"' : ''}
+        ${groupTcId != null ? ', trGroup."text" AS "localGroupName"' : ''}
+      FROM "invTypes" t
+      JOIN "invGroups" g ON t."groupID" = g."groupID"
+      ${typeTcId != null ? 'LEFT JOIN "trnTranslations" trType ON trType."tcID" = $typeTcId AND trType."keyID" = t."typeID" AND trType."languageID" = \'$lang\'' : ''}
+      ${groupTcId != null ? 'LEFT JOIN "trnTranslations" trGroup ON trGroup."tcID" = $groupTcId AND trGroup."keyID" = g."groupID" AND trGroup."languageID" = \'$lang\'' : ''}
+      WHERE g."categoryID" = 16
+        AND t.published = 1
+      ORDER BY g."groupName", t."typeName"
+    ''');
+    return result
+        .map((row) => {
+              'typeID': row['typeID'],
+              'typeName': row['localTypeName'] ?? row['typeName'],
+              'groupID': row['groupID'],
+              'groupName': row['localGroupName'] ?? row['groupName'],
+            })
+        .toList();
+  }
+
+  /// 获取技能分组列表（categoryID = 16）
+  List<Map<String, dynamic>> getSkillGroups({String lang = 'en'}) {
+    _ensureLoaded();
+    final groupTcId = _getTcId('invGroups', 'groupName');
+    final result = _db!.select('''
+      SELECT g."groupID", g."groupName"
+        ${groupTcId != null ? ', tr."text" AS "localGroupName"' : ''}
+      FROM "invGroups" g
+      ${groupTcId != null ? 'LEFT JOIN "trnTranslations" tr ON tr."tcID" = $groupTcId AND tr."keyID" = g."groupID" AND tr."languageID" = \'$lang\'' : ''}
+      WHERE g."categoryID" = 16
+        AND g.published = 1
+      ORDER BY g."groupName"
+    ''');
+    return result
+        .map((row) => {
+              'groupID': row['groupID'],
+              'groupName': row['localGroupName'] ?? row['groupName'],
+            })
+        .toList();
+  }
 }

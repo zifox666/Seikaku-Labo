@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'Character'**
   String get tabCharacter;
 
+  /// Bottom navigation tab for skills and skill queue
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get tabSkills;
+
   /// Bottom navigation tab for settings
   ///
   /// In en, this message translates to:
@@ -464,6 +470,144 @@ abstract class AppLocalizations {
   /// **'Character management coming soon'**
   String get characterPlaceholder;
 
+  /// Captain section label
+  ///
+  /// In en, this message translates to:
+  /// **'Captain'**
+  String get captain;
+
+  /// Implants section label
+  ///
+  /// In en, this message translates to:
+  /// **'Implants'**
+  String get implants;
+
+  /// Boosters section label
+  ///
+  /// In en, this message translates to:
+  /// **'Boosters'**
+  String get boosters;
+
+  /// Add implant button
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addImplant;
+
+  /// Add booster button
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addBooster;
+
+  /// Default character with all skills at level 0
+  ///
+  /// In en, this message translates to:
+  /// **'All Skills Lv0'**
+  String get allSkillsLevel0;
+
+  /// Default character with all skills at level 5
+  ///
+  /// In en, this message translates to:
+  /// **'All Skills Lv5'**
+  String get allSkillsLevel5;
+
+  /// Implant selection page title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Implant'**
+  String get selectImplant;
+
+  /// Booster selection page title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Booster'**
+  String get selectBooster;
+
+  /// Implant search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search implant...'**
+  String get searchImplant;
+
+  /// Booster search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search booster...'**
+  String get searchBooster;
+
+  /// Implant slot label
+  ///
+  /// In en, this message translates to:
+  /// **'Slot {slot}'**
+  String implantSlot(String slot);
+
+  /// Empty implants placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'No implants'**
+  String get noImplants;
+
+  /// Empty boosters placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'No boosters'**
+  String get noBoosters;
+
+  /// Import implants from character
+  ///
+  /// In en, this message translates to:
+  /// **'Import from Character'**
+  String get importFromCharacter;
+
+  /// Currently active implants
+  ///
+  /// In en, this message translates to:
+  /// **'Active Implants'**
+  String get activeImplants;
+
+  /// Jump clone label
+  ///
+  /// In en, this message translates to:
+  /// **'Jump Clone'**
+  String get jumpClone;
+
+  /// No active implants placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'No active implants'**
+  String get noActiveImplants;
+
+  /// Import implants page title
+  ///
+  /// In en, this message translates to:
+  /// **'Import Implants'**
+  String get importImplants;
+
+  /// Implant import success message
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {count} implants'**
+  String importImplantsSuccess(String count);
+
+  /// Loading implants status
+  ///
+  /// In en, this message translates to:
+  /// **'Loading implants...'**
+  String get loadingImplants;
+
+  /// Load implants error
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load implants'**
+  String get loadImplantsFailed;
+
+  /// Clear all implants button
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All Implants'**
+  String get clearAllImplants;
+
   /// Stats tab placeholder
   ///
   /// In en, this message translates to:
@@ -769,6 +913,612 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No modules found'**
   String get noModulesFound;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginTitle;
+
+  /// No description provided for @loginSsoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'EVE SSO Login'**
+  String get loginSsoTitle;
+
+  /// No description provided for @loginSsoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticate via EVE Online Single Sign-On'**
+  String get loginSsoDescription;
+
+  /// No description provided for @loginWithSso.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with SSO'**
+  String get loginWithSso;
+
+  /// No description provided for @loginOrToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Or enter Token'**
+  String get loginOrToken;
+
+  /// No description provided for @loginTokenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste JWT Token'**
+  String get loginTokenHint;
+
+  /// No description provided for @loginPasteToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get loginPasteToken;
+
+  /// No description provided for @loginWithToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Token'**
+  String get loginWithToken;
+
+  /// No description provided for @loginAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Options'**
+  String get loginAdvanced;
+
+  /// No description provided for @serverUrlTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backend URL'**
+  String get serverUrlTitle;
+
+  /// No description provided for @serverUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. http://127.0.0.1:8080/api/v1'**
+  String get serverUrlHint;
+
+  /// No description provided for @serverUrlSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'URL saved'**
+  String get serverUrlSaved;
+
+  /// No description provided for @serverUrlReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to default'**
+  String get serverUrlReset;
+
+  /// No description provided for @serverUrlDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Backend URL'**
+  String get serverUrlDialogTitle;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @characterNotLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in first'**
+  String get characterNotLoggedIn;
+
+  /// No description provided for @characterBind.
+  ///
+  /// In en, this message translates to:
+  /// **'Bind Character'**
+  String get characterBind;
+
+  /// No description provided for @characterBindFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to bind character'**
+  String get characterBindFailed;
+
+  /// No description provided for @characterBindSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Character bound successfully'**
+  String get characterBindSuccess;
+
+  /// No description provided for @characterSetPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as Primary'**
+  String get characterSetPrimary;
+
+  /// No description provided for @characterSetPrimaryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to set primary character'**
+  String get characterSetPrimaryFailed;
+
+  /// No description provided for @characterUnbind.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind'**
+  String get characterUnbind;
+
+  /// No description provided for @characterUnbindConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind character \"{name}\"?'**
+  String characterUnbindConfirm(String name);
+
+  /// No description provided for @characterUnbindFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unbind character'**
+  String get characterUnbindFailed;
+
+  /// No description provided for @characterNoCharacters.
+  ///
+  /// In en, this message translates to:
+  /// **'No characters bound'**
+  String get characterNoCharacters;
+
+  /// No description provided for @characterPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get characterPrimary;
+
+  /// No description provided for @notificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationTitle;
+
+  /// No description provided for @notificationMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get notificationMarkAllRead;
+
+  /// No description provided for @notificationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications'**
+  String get notificationEmpty;
+
+  /// No description provided for @walletTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get walletTitle;
+
+  /// No description provided for @walletBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get walletBalance;
+
+  /// No description provided for @walletTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get walletTransactions;
+
+  /// No description provided for @walletNoTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions'**
+  String get walletNoTransactions;
+
+  /// No description provided for @fleetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fleets'**
+  String get fleetTitle;
+
+  /// No description provided for @fleetEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No fleets'**
+  String get fleetEmpty;
+
+  /// No description provided for @fleetUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Fleet'**
+  String get fleetUntitled;
+
+  /// No description provided for @fleetDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Fleet Detail'**
+  String get fleetDetail;
+
+  /// No description provided for @fleetInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get fleetInfo;
+
+  /// No description provided for @fleetMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get fleetMembers;
+
+  /// No description provided for @fleetPap.
+  ///
+  /// In en, this message translates to:
+  /// **'PAP'**
+  String get fleetPap;
+
+  /// No description provided for @fleetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Fleet Name'**
+  String get fleetName;
+
+  /// No description provided for @fleetStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get fleetStatus;
+
+  /// No description provided for @fleetImportance.
+  ///
+  /// In en, this message translates to:
+  /// **'Importance'**
+  String get fleetImportance;
+
+  /// No description provided for @fleetStartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Time'**
+  String get fleetStartTime;
+
+  /// No description provided for @fleetEndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'End Time'**
+  String get fleetEndTime;
+
+  /// No description provided for @fleetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get fleetDescription;
+
+  /// No description provided for @fleetNoMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'No members'**
+  String get fleetNoMembers;
+
+  /// No description provided for @fleetNoPap.
+  ///
+  /// In en, this message translates to:
+  /// **'No PAP records'**
+  String get fleetNoPap;
+
+  /// No description provided for @shopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopTitle;
+
+  /// No description provided for @shopProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get shopProducts;
+
+  /// No description provided for @shopOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'My Orders'**
+  String get shopOrders;
+
+  /// No description provided for @shopRedeemCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem Codes'**
+  String get shopRedeemCodes;
+
+  /// No description provided for @shopEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No products'**
+  String get shopEmpty;
+
+  /// No description provided for @shopNoOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders'**
+  String get shopNoOrders;
+
+  /// No description provided for @shopNoRedeemCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'No redeem codes'**
+  String get shopNoRedeemCodes;
+
+  /// No description provided for @shopBuyConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Purchase'**
+  String get shopBuyConfirmTitle;
+
+  /// No description provided for @shopBuyConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy \"{name}\" for {price}?'**
+  String shopBuyConfirm(String name, String price);
+
+  /// No description provided for @shopBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get shopBuy;
+
+  /// No description provided for @shopBuySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase successful'**
+  String get shopBuySuccess;
+
+  /// No description provided for @shopBuyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase failed'**
+  String get shopBuyFailed;
+
+  /// No description provided for @srpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SRP'**
+  String get srpTitle;
+
+  /// No description provided for @srpPrices.
+  ///
+  /// In en, this message translates to:
+  /// **'Ship Prices'**
+  String get srpPrices;
+
+  /// No description provided for @srpMyApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'My Applications'**
+  String get srpMyApplications;
+
+  /// No description provided for @srpMyKillmails.
+  ///
+  /// In en, this message translates to:
+  /// **'My Killmails'**
+  String get srpMyKillmails;
+
+  /// No description provided for @srpSearchShip.
+  ///
+  /// In en, this message translates to:
+  /// **'Search ship...'**
+  String get srpSearchShip;
+
+  /// No description provided for @srpNoPrices.
+  ///
+  /// In en, this message translates to:
+  /// **'No ship prices'**
+  String get srpNoPrices;
+
+  /// No description provided for @srpNoApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'No SRP applications'**
+  String get srpNoApplications;
+
+  /// No description provided for @srpNoKillmails.
+  ///
+  /// In en, this message translates to:
+  /// **'No killmails'**
+  String get srpNoKillmails;
+
+  /// No description provided for @importImplantSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Set?'**
+  String get importImplantSet;
+
+  /// No description provided for @importImplantSetDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected \"{series}\" set ({count} implants for slots 1-6). Import the full set?'**
+  String importImplantSetDesc(String series, String count);
+
+  /// No description provided for @importImplantSetJustOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Just This One'**
+  String get importImplantSetJustOne;
+
+  /// No description provided for @importImplantSetAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Full Set'**
+  String get importImplantSetAll;
+
+  /// Sidebar label for implants & clones
+  ///
+  /// In en, this message translates to:
+  /// **'Implants'**
+  String get tabImplants;
+
+  /// Refresh button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// Jump clones section title
+  ///
+  /// In en, this message translates to:
+  /// **'Jump Clones'**
+  String get jumpClones;
+
+  /// Shown when not logged in
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in first'**
+  String get pleaseLogin;
+
+  /// Character selector placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Select Character'**
+  String get selectCharacter;
+
+  /// Generic loading label
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// Home station section
+  ///
+  /// In en, this message translates to:
+  /// **'Home Station'**
+  String get homeStation;
+
+  /// Active implants section
+  ///
+  /// In en, this message translates to:
+  /// **'Current Active Implants'**
+  String get currentActiveImplants;
+
+  /// Jump fatigue cooldown label
+  ///
+  /// In en, this message translates to:
+  /// **'Clone Jump Timer'**
+  String get jumpFatigueCooldown;
+
+  /// Clone is ready to jump
+  ///
+  /// In en, this message translates to:
+  /// **'Clone Ready'**
+  String get cloneReady;
+
+  /// Last jump timestamp label
+  ///
+  /// In en, this message translates to:
+  /// **'Last Jump'**
+  String get lastJump;
+
+  /// Last clone jump timestamp label
+  ///
+  /// In en, this message translates to:
+  /// **'Last Clone Jump'**
+  String get lastCloneJump;
+
+  /// Sidebar label for NPC kills report
+  ///
+  /// In en, this message translates to:
+  /// **'NPC Kills'**
+  String get tabNpcKills;
+
+  /// Dropdown option for all characters
+  ///
+  /// In en, this message translates to:
+  /// **'All Characters'**
+  String get npcKillsAllChars;
+
+  /// Error message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load NPC kills'**
+  String get npcKillsLoadFailed;
+
+  /// NPC bounty total
+  ///
+  /// In en, this message translates to:
+  /// **'Bounty'**
+  String get npcKillsBounty;
+
+  /// ESS income total
+  ///
+  /// In en, this message translates to:
+  /// **'ESS Income'**
+  String get npcKillsEss;
+
+  /// Tax total
+  ///
+  /// In en, this message translates to:
+  /// **'Tax'**
+  String get npcKillsTax;
+
+  /// Actual income total
+  ///
+  /// In en, this message translates to:
+  /// **'Actual Income'**
+  String get npcKillsActualIncome;
+
+  /// Total record count
+  ///
+  /// In en, this message translates to:
+  /// **'Total Records'**
+  String get npcKillsTotalRecords;
+
+  /// Estimated hours
+  ///
+  /// In en, this message translates to:
+  /// **'Est. Hours'**
+  String get npcKillsEstimatedHours;
+
+  /// Section: by NPC
+  ///
+  /// In en, this message translates to:
+  /// **'By NPC'**
+  String get npcKillsByNpc;
+
+  /// Section: by system
+  ///
+  /// In en, this message translates to:
+  /// **'By System'**
+  String get npcKillsBySystem;
+
+  /// Empty state
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get npcKillsNoData;
+
+  /// NPC name column
+  ///
+  /// In en, this message translates to:
+  /// **'NPC Name'**
+  String get npcKillsNpcName;
+
+  /// Kill count column
+  ///
+  /// In en, this message translates to:
+  /// **'Kills'**
+  String get npcKillsCount;
+
+  /// System name column
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get npcKillsSystemName;
+
+  /// Amount column
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get npcKillsAmount;
+
+  /// Journal section
+  ///
+  /// In en, this message translates to:
+  /// **'Journal'**
+  String get npcKillsJournal;
 }
 
 class _AppLocalizationsDelegate

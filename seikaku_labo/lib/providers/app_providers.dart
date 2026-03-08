@@ -19,4 +19,12 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
 
 /// 当前语言代码 Provider（用于 SDE 翻译查询）
 /// 默认 'en'，在 UI 层根据 Locale 更新
-final sdeLanguageProvider = StateProvider<String>((ref) => 'en');
+class SdeLanguageNotifier extends Notifier<String> {
+  @override
+  String build() => 'en';
+
+  void setState(String lang) => state = lang;
+}
+
+final sdeLanguageProvider =
+    NotifierProvider<SdeLanguageNotifier, String>(SdeLanguageNotifier.new);

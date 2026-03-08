@@ -5,17 +5,39 @@ class EsfFit {
   final int shipTypeId;
   final List<FitModule> modules;
   final List<FitDrone> drones;
+  final List<FitImplant> implants;
+  final List<FitBooster> boosters;
 
   const EsfFit({
     required this.shipTypeId,
     this.modules = const [],
     this.drones = const [],
+    this.implants = const [],
+    this.boosters = const [],
   });
+
+  EsfFit copyWith({
+    int? shipTypeId,
+    List<FitModule>? modules,
+    List<FitDrone>? drones,
+    List<FitImplant>? implants,
+    List<FitBooster>? boosters,
+  }) {
+    return EsfFit(
+      shipTypeId: shipTypeId ?? this.shipTypeId,
+      modules: modules ?? this.modules,
+      drones: drones ?? this.drones,
+      implants: implants ?? this.implants,
+      boosters: boosters ?? this.boosters,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'ship_type_id': shipTypeId,
         'modules': modules.map((m) => m.toJson()).toList(),
         'drones': drones.map((d) => d.toJson()).toList(),
+        'implants': implants.map((i) => i.toJson()).toList(),
+        'boosters': boosters.map((b) => b.toJson()).toList(),
       };
 
   factory EsfFit.fromJson(Map<String, dynamic> json) => EsfFit(
@@ -26,6 +48,14 @@ class EsfFit {
             [],
         drones: (json['drones'] as List<dynamic>?)
                 ?.map((d) => FitDrone.fromJson(d as Map<String, dynamic>))
+                .toList() ??
+            [],
+        implants: (json['implants'] as List<dynamic>?)
+                ?.map((i) => FitImplant.fromJson(i as Map<String, dynamic>))
+                .toList() ??
+            [],
+        boosters: (json['boosters'] as List<dynamic>?)
+                ?.map((b) => FitBooster.fromJson(b as Map<String, dynamic>))
                 .toList() ??
             [],
       );
@@ -134,5 +164,39 @@ class FitDrone {
   factory FitDrone.fromJson(Map<String, dynamic> json) => FitDrone(
         typeId: json['type_id'] as int,
         state: ModuleState.fromValue(json['state'] as String),
+      );
+}
+
+class FitImplant {
+  final int typeId;
+  final int index;
+
+  const FitImplant({required this.typeId, required this.index});
+
+  Map<String, dynamic> toJson() => {
+        'type_id': typeId,
+        'index': index,
+      };
+
+  factory FitImplant.fromJson(Map<String, dynamic> json) => FitImplant(
+        typeId: json['type_id'] as int,
+        index: json['index'] as int,
+      );
+}
+
+class FitBooster {
+  final int typeId;
+  final int index;
+
+  const FitBooster({required this.typeId, required this.index});
+
+  Map<String, dynamic> toJson() => {
+        'type_id': typeId,
+        'index': index,
+      };
+
+  factory FitBooster.fromJson(Map<String, dynamic> json) => FitBooster(
+        typeId: json['type_id'] as int,
+        index: json['index'] as int,
       );
 }

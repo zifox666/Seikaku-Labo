@@ -112,6 +112,14 @@ install(DIRECTORY "${NATIVE_ASSETS_DIR}"
    DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
    COMPONENT Runtime)
 
+# Copy Seikaku Engine SO to the lib directory.
+set(SEIKAKU_ENGINE_SO "${CMAKE_CURRENT_SOURCE_DIR}/../libseikaku_engine.so")
+if(EXISTS "${SEIKAKU_ENGINE_SO}")
+  install(FILES "${SEIKAKU_ENGINE_SO}"
+    DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+    COMPONENT Runtime)
+endif()
+
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.
 set(FLUTTER_ASSET_DIR_NAME "flutter_assets")

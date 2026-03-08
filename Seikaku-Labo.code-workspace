@@ -1,11 +1,10 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "../Seikaku-Engine"
-		}
-	],
-	"settings": {}
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "../Seikaku-Engine"
+        }
+    ]
 }

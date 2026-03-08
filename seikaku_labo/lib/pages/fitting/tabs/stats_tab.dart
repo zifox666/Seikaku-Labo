@@ -7,7 +7,6 @@ import '../../../l10n/app_localizations.dart';
 import '../../../providers/stats_provider.dart';
 
 // ── 伤害类型颜色 ──────────────────────────────────────────────────────────────
-const _emColor = Color(0xFF9B59E8);    // 紫
 const _thermColor = Color(0xFFE85959); // 红
 const _kinColor = Color(0xFF9EACB4);   // 银
 const _expColor = Color(0xFFE8A33D);   // 橙
@@ -166,7 +165,7 @@ class _StatsContentState extends State<_StatsContent> {
     return total > 0 ? total : null;
   }
 
-  /// 对齐时间（秒）= −ln(0.25) × mass × inertia / 1,000,000
+  /// 起跳时间（秒）= −ln(0.25) × mass × inertia / 1,000,000
   double? _computeAlignTime() {
     final mass = _attr(4);
     final inertia = _attr(70);
@@ -330,17 +329,7 @@ class _StatsContentState extends State<_StatsContent> {
     return (dpsNoReload: totalDps, alpha: totalAlpha);
   }
 
-  /// 护盾无源充能峰值（HP/s）
-  double? _computeShieldPeakRecharge() {
-    final cap = _attr(263);
-    final tauMs = _attr(479);
-    if (cap == null || tauMs == null || tauMs == 0) return null;
-    return cap * 2.5 / (tauMs / 1000.0);
-  }
-
   static String _fmtHp(double hp) {
-    if (hp >= 1000000) return '${(hp / 1000000).toStringAsFixed(2)} M';
-    if (hp >= 1000) return '${(hp / 1000).toStringAsFixed(1)} k';
     return hp.toStringAsFixed(0);
   }
 

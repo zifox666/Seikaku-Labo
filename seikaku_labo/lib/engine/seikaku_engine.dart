@@ -32,8 +32,16 @@ class SeikakuEngine {
     if (Platform.isWindows) {
       return DynamicLibrary.open('seikaku_engine.dll');
     } else if (Platform.isMacOS) {
+      // .app bundle: Contents/MacOS/<exe> → ../Frameworks/
+      final exeDir = File(Platform.resolvedExecutable).parent.path;
+      final fwPath = '$exeDir/../Frameworks/libseikaku_engine.dylib';
+      if (File(fwPath).existsSync()) return DynamicLibrary.open(fwPath);
       return DynamicLibrary.open('libseikaku_engine.dylib');
     } else if (Platform.isLinux) {
+      // bundle: <exe> → lib/
+      final exeDir = File(Platform.resolvedExecutable).parent.path;
+      final libPath = '$exeDir/lib/libseikaku_engine.so';
+      if (File(libPath).existsSync()) return DynamicLibrary.open(libPath);
       return DynamicLibrary.open('libseikaku_engine.so');
     } else if (Platform.isIOS) {
       return DynamicLibrary.process(); // 静态链接

@@ -37,9 +37,9 @@ class FittingState {
 }
 
 /// 当前装配 Notifier
-class FittingNotifier extends StateNotifier<FittingState> {
-  final Ref _ref;
-  FittingNotifier(this._ref) : super(const FittingState());
+class FittingNotifier extends Notifier<FittingState> {
+  @override
+  FittingState build() => const FittingState();
 
   /// 创建新装配
   void createFit({
@@ -86,11 +86,7 @@ class FittingNotifier extends StateNotifier<FittingState> {
     if (fit == null) return;
 
     final modules = List<FitModule>.from(fit.modules)..add(module);
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: modules,
-      drones: fit.drones,
-    );
+    final newFit = fit.copyWith(modules: modules);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -107,11 +103,7 @@ class FittingNotifier extends StateNotifier<FittingState> {
     final modules = fit.modules
         .where((m) => !(m.slot.type == slotType && m.slot.index == index))
         .toList();
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: modules,
-      drones: fit.drones,
-    );
+    final newFit = fit.copyWith(modules: modules);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -149,11 +141,7 @@ class FittingNotifier extends StateNotifier<FittingState> {
       }
       return m;
     }).toList();
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: modules,
-      drones: fit.drones,
-    );
+    final newFit = fit.copyWith(modules: modules);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -204,11 +192,7 @@ class FittingNotifier extends StateNotifier<FittingState> {
 
     if (!changed) return;
 
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: modules,
-      drones: fit.drones,
-    );
+    final newFit = fit.copyWith(modules: modules);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -223,11 +207,7 @@ class FittingNotifier extends StateNotifier<FittingState> {
     if (fit == null) return;
 
     final drones = List<FitDrone>.from(fit.drones)..add(drone);
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: fit.modules,
-      drones: drones,
-    );
+    final newFit = fit.copyWith(drones: drones);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -242,11 +222,7 @@ class FittingNotifier extends StateNotifier<FittingState> {
     if (fit == null) return;
 
     final drones = List<FitDrone>.from(fit.drones)..removeAt(index);
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: fit.modules,
-      drones: drones,
-    );
+    final newFit = fit.copyWith(drones: drones);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -261,11 +237,7 @@ class FittingNotifier extends StateNotifier<FittingState> {
     if (fit == null) return;
 
     final drones = fit.drones.where((d) => d.typeId != typeId).toList();
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: fit.modules,
-      drones: drones,
-    );
+    final newFit = fit.copyWith(drones: drones);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -321,11 +293,7 @@ class FittingNotifier extends StateNotifier<FittingState> {
       return m;
     }).toList();
 
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: modules,
-      drones: fit.drones,
-    );
+    final newFit = fit.copyWith(modules: modules);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -351,11 +319,90 @@ class FittingNotifier extends StateNotifier<FittingState> {
       return m;
     }).toList();
 
-    final newFit = EsfFit(
-      shipTypeId: fit.shipTypeId,
-      modules: modules,
-      drones: fit.drones,
+    final newFit = fit.copyWith(modules: modules);
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
     );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 添加植入体
+  void addImplant(FitImplant implant) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    // 移除同槽位的旧植入体
+    final implants = fit.implants.where((i) => i.index != implant.index).toList()
+      ..add(implant);
+    final newFit = fit.copyWith(implants: implants);
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 批量设置植入体（替换所有植入体）
+  void setImplants(List<FitImplant> newImplants) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final newFit = fit.copyWith(implants: newImplants);
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 清空所有植入体
+  void clearImplants() {
+    setImplants([]);
+  }
+
+  /// 移除植入体
+  void removeImplant(int index) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final implants = fit.implants.where((i) => i.index != index).toList();
+    final newFit = fit.copyWith(implants: implants);
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 添加增效剂
+  void addBooster(FitBooster booster) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    // 移除同槽位的旧增效剂
+    final boosters = fit.boosters.where((b) => b.index != booster.index).toList()
+      ..add(booster);
+    final newFit = fit.copyWith(boosters: boosters);
+    final saved = state.savedFit?.copyWith(
+      fitJson: jsonEncode(newFit.toJson()),
+      updatedAt: DateTime.now(),
+    );
+    state = state.copyWith(fit: newFit, savedFit: saved);
+    _persistCurrent();
+  }
+
+  /// 移除增效剂
+  void removeBooster(int index) {
+    final fit = state.fit;
+    if (fit == null) return;
+
+    final boosters = fit.boosters.where((b) => b.index != index).toList();
+    final newFit = fit.copyWith(boosters: boosters);
     final saved = state.savedFit?.copyWith(
       fitJson: jsonEncode(newFit.toJson()),
       updatedAt: DateTime.now(),
@@ -373,28 +420,26 @@ class FittingNotifier extends StateNotifier<FittingState> {
   void _persistCurrent() {
     final saved = state.savedFit;
     if (saved == null) return;
-    _ref.read(savedFitsProvider.notifier).updateFit(saved);
+    ref.read(savedFitsProvider.notifier).updateFit(saved);
   }
 }
 
 /// 当前装配 Provider
 final fittingNotifierProvider =
-    StateNotifierProvider<FittingNotifier, FittingState>((ref) {
-  return FittingNotifier(ref);
-});
+    NotifierProvider<FittingNotifier, FittingState>(FittingNotifier.new);
 
 /// 已保存装配列表 Provider（持久化到 AppDatabase）
-class SavedFitsNotifier extends StateNotifier<List<SavedFit>> {
-  final Ref _ref;
+class SavedFitsNotifier extends Notifier<List<SavedFit>> {
   bool _loaded = false;
 
-  SavedFitsNotifier(this._ref) : super([]);
+  @override
+  List<SavedFit> build() => [];
 
   /// 从数据库加载已保存装配（首次调用时自动执行）
   Future<void> _ensureLoaded() async {
     if (_loaded) return;
     _loaded = true;
-    final db = _ref.read(appDatabaseProvider);
+    final db = ref.read(appDatabaseProvider);
     if (!db.isOpen) {
       await db.open();
     }
@@ -414,7 +459,7 @@ class SavedFitsNotifier extends StateNotifier<List<SavedFit>> {
   Future<void> load() => _ensureLoaded();
 
   void addFit(SavedFit fit) {
-    final db = _ref.read(appDatabaseProvider);
+    final db = ref.read(appDatabaseProvider);
     db.upsertFit(
       id: fit.id,
       name: fit.name,
@@ -428,13 +473,13 @@ class SavedFitsNotifier extends StateNotifier<List<SavedFit>> {
   }
 
   void removeFit(String id) {
-    final db = _ref.read(appDatabaseProvider);
+    final db = ref.read(appDatabaseProvider);
     db.deleteFit(id);
     state = state.where((f) => f.id != id).toList();
   }
 
   void updateFit(SavedFit fit) {
-    final db = _ref.read(appDatabaseProvider);
+    final db = ref.read(appDatabaseProvider);
     db.upsertFit(
       id: fit.id,
       name: fit.name,
@@ -449,9 +494,7 @@ class SavedFitsNotifier extends StateNotifier<List<SavedFit>> {
 }
 
 final savedFitsProvider =
-    StateNotifierProvider<SavedFitsNotifier, List<SavedFit>>((ref) {
-  return SavedFitsNotifier(ref);
-});
+    NotifierProvider<SavedFitsNotifier, List<SavedFit>>(SavedFitsNotifier.new);
 
 /// 舰船分组列表 Provider
 final shipGroupsProvider = Provider<List<ShipGroup>>((ref) {
@@ -483,3 +526,32 @@ final shipsByGroupProvider =
       .toList();
   return RaceInfo.groupByRace(shipList);
 });
+
+// ─── 技能配置 ────────────────────────────────────
+
+/// 技能配置类型
+enum SkillProfile { allZero, allFive, character }
+
+/// 技能选择状态
+class SkillSelection {
+  final SkillProfile profile;
+  final int? characterId;
+  final String? characterName;
+
+  const SkillSelection({
+    this.profile = SkillProfile.allFive,
+    this.characterId,
+    this.characterName,
+  });
+}
+
+/// 技能选择 Notifier
+class SkillSelectionNotifier extends Notifier<SkillSelection> {
+  @override
+  SkillSelection build() => const SkillSelection();
+  void setState(SkillSelection s) => state = s;
+}
+
+/// 当前技能配置 Provider（全局跨 tab 持久）
+final skillSelectionProvider =
+    NotifierProvider<SkillSelectionNotifier, SkillSelection>(SkillSelectionNotifier.new);
