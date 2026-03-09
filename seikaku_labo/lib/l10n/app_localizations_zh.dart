@@ -188,6 +188,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get delete => '删除';
 
   @override
+  String get renameFitting => '重命名装配';
+
+  @override
+  String get rename => '重命名';
+
+  @override
   String get capacitor => '电容';
 
   @override
@@ -757,4 +763,60 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get npcKillsJournal => '流水记录';
+
+  @override
+  String get cloudSaveTitle => '保存到游戏';
+
+  @override
+  String get cloudSavePrompt => '装配已修改，是否保存到游戏？';
+
+  @override
+  String get cloudSaveConfirm => '保存';
+
+  @override
+  String get cloudSaveSkip => '不保存';
+
+  @override
+  String get cloudSaveSuccess => '已保存到游戏';
+
+  @override
+  String get cloudSaveFailed => '保存失败';
+
+  @override
+  String get cloudSaveNoCharacter => '请先设置主角色';
+
+  @override
+  String get cloudSynced => '已同步到游戏';
+
+  @override
+  String get cloudModified => '本地已修改';
+
+  @override
+  String get cloudNotSynced => '仅本地保存';
+
+  @override
+  String get cloudFetch => '从游戏拉取装配';
+
+  @override
+  String get cloudFetchFailed => '拉取装配失败';
+
+  @override
+  String get cloudFittings => '游戏装配';
+
+  @override
+  String get cloudNoFittings => '游戏中没有装配';
+
+  @override
+  String get cloudSearchHint => '搜索装配...';
+
+  @override
+  String get cloudNoResults => '没有匹配的装配';
+
+  @override
+  String get cloudImport => '导入';
+
+  @override
+  String cloudImportSuccess(String name) {
+    return '已导入「$name」';
+  }
 }

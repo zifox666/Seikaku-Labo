@@ -440,6 +440,18 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
+  /// Rename fitting dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Rename Fitting'**
+  String get renameFitting;
+
+  /// Rename confirm button
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get rename;
+
   /// Capacitor stats label
   ///
   /// In en, this message translates to:
@@ -1549,6 +1561,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Journal'**
   String get npcKillsJournal;
+
+  /// Cloud save dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Save to Game'**
+  String get cloudSaveTitle;
+
+  /// Cloud save dialog prompt
+  ///
+  /// In en, this message translates to:
+  /// **'Fitting has been modified. Save to game?'**
+  String get cloudSavePrompt;
+
+  /// Cloud save confirm button
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get cloudSaveConfirm;
+
+  /// Cloud save skip button
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t Save'**
+  String get cloudSaveSkip;
+
+  /// Cloud save success message
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to game'**
+  String get cloudSaveSuccess;
+
+  /// Cloud save failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed'**
+  String get cloudSaveFailed;
+
+  /// No primary character for cloud save
+  ///
+  /// In en, this message translates to:
+  /// **'Please set a primary character first'**
+  String get cloudSaveNoCharacter;
+
+  /// Fitting is synced to cloud
+  ///
+  /// In en, this message translates to:
+  /// **'Synced to game'**
+  String get cloudSynced;
+
+  /// Fitting modified locally
+  ///
+  /// In en, this message translates to:
+  /// **'Locally modified'**
+  String get cloudModified;
+
+  /// Fitting is local only
+  ///
+  /// In en, this message translates to:
+  /// **'Local only'**
+  String get cloudNotSynced;
+
+  /// Tooltip for cloud fetch button
+  ///
+  /// In en, this message translates to:
+  /// **'Fetch fittings from game'**
+  String get cloudFetch;
+
+  /// Cloud fetch failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to fetch fittings'**
+  String get cloudFetchFailed;
+
+  /// Cloud fittings sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Game Fittings'**
+  String get cloudFittings;
+
+  /// No cloud fittings
+  ///
+  /// In en, this message translates to:
+  /// **'No fittings in game'**
+  String get cloudNoFittings;
+
+  /// Cloud fittings search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search fittings...'**
+  String get cloudSearchHint;
+
+  /// No search results
+  ///
+  /// In en, this message translates to:
+  /// **'No matching fittings'**
+  String get cloudNoResults;
+
+  /// Import cloud fitting button
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get cloudImport;
+
+  /// Cloud import success message
+  ///
+  /// In en, this message translates to:
+  /// **'Imported \"{name}\"'**
+  String cloudImportSuccess(String name);
 }
 
 class _AppLocalizationsDelegate

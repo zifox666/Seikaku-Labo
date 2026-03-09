@@ -189,6 +189,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
+  String get renameFitting => 'Rename Fitting';
+
+  @override
+  String get rename => 'Rename';
+
+  @override
   String get capacitor => 'Capacitor';
 
   @override
@@ -759,4 +765,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get npcKillsJournal => 'Journal';
+
+  @override
+  String get cloudSaveTitle => 'Save to Game';
+
+  @override
+  String get cloudSavePrompt => 'Fitting has been modified. Save to game?';
+
+  @override
+  String get cloudSaveConfirm => 'Save';
+
+  @override
+  String get cloudSaveSkip => 'Don\'t Save';
+
+  @override
+  String get cloudSaveSuccess => 'Saved to game';
+
+  @override
+  String get cloudSaveFailed => 'Save failed';
+
+  @override
+  String get cloudSaveNoCharacter => 'Please set a primary character first';
+
+  @override
+  String get cloudSynced => 'Synced to game';
+
+  @override
+  String get cloudModified => 'Locally modified';
+
+  @override
+  String get cloudNotSynced => 'Local only';
+
+  @override
+  String get cloudFetch => 'Fetch fittings from game';
+
+  @override
+  String get cloudFetchFailed => 'Failed to fetch fittings';
+
+  @override
+  String get cloudFittings => 'Game Fittings';
+
+  @override
+  String get cloudNoFittings => 'No fittings in game';
+
+  @override
+  String get cloudSearchHint => 'Search fittings...';
+
+  @override
+  String get cloudNoResults => 'No matching fittings';
+
+  @override
+  String get cloudImport => 'Import';
+
+  @override
+  String cloudImportSuccess(String name) {
+    return 'Imported \"$name\"';
+  }
 }

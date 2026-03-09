@@ -240,6 +240,10 @@
   "@delete": {
     "description": "Delete button"
   },
+  "renameFitting": "Rename Fitting",
+  "@renameFitting": { "description": "Rename fitting dialog title" },
+  "rename": "Rename",
+  "@rename": { "description": "Rename confirm button" },
   "capacitor": "Capacitor",
   "@capacitor": {
     "description": "Capacitor stats label"
@@ -634,5 +638,47 @@
   "npcKillsAmount": "Amount",
   "@npcKillsAmount": { "description": "Amount column" },
   "npcKillsJournal": "Journal",
-  "@npcKillsJournal": { "description": "Journal section" }
+  "@npcKillsJournal": { "description": "Journal section" },
+
+  "cloudSaveTitle": "Save to Game",
+  "@cloudSaveTitle": { "description": "Cloud save dialog title" },
+  "cloudSavePrompt": "Fitting has been modified. Save to game?",
+  "@cloudSavePrompt": { "description": "Cloud save dialog prompt" },
+  "cloudSaveConfirm": "Save",
+  "@cloudSaveConfirm": { "description": "Cloud save confirm button" },
+  "cloudSaveSkip": "Don't Save",
+  "@cloudSaveSkip": { "description": "Cloud save skip button" },
+  "cloudSaveSuccess": "Saved to game",
+  "@cloudSaveSuccess": { "description": "Cloud save success message" },
+  "cloudSaveFailed": "Save failed",
+  "@cloudSaveFailed": { "description": "Cloud save failure message" },
+  "cloudSaveNoCharacter": "Please set a primary character first",
+  "@cloudSaveNoCharacter": { "description": "No primary character for cloud save" },
+  "cloudSynced": "Synced to game",
+  "@cloudSynced": { "description": "Fitting is synced to cloud" },
+  "cloudModified": "Locally modified",
+  "@cloudModified": { "description": "Fitting modified locally" },
+  "cloudNotSynced": "Local only",
+  "@cloudNotSynced": { "description": "Fitting is local only" },
+  "cloudFetch": "Fetch fittings from game",
+  "@cloudFetch": { "description": "Tooltip for cloud fetch button" },
+  "cloudFetchFailed": "Failed to fetch fittings",
+  "@cloudFetchFailed": { "description": "Cloud fetch failure message" },
+  "cloudFittings": "Game Fittings",
+  "@cloudFittings": { "description": "Cloud fittings sheet title" },
+  "cloudNoFittings": "No fittings in game",
+  "@cloudNoFittings": { "description": "No cloud fittings" },
+  "cloudSearchHint": "Search fittings...",
+  "@cloudSearchHint": { "description": "Cloud fittings search hint" },
+  "cloudNoResults": "No matching fittings",
+  "@cloudNoResults": { "description": "No search results" },
+  "cloudImport": "Import",
+  "@cloudImport": { "description": "Import cloud fitting button" },
+  "cloudImportSuccess": "Imported \"{name}\"",
+  "@cloudImportSuccess": {
+    "description": "Cloud import success message",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

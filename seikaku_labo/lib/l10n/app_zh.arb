@@ -57,6 +57,8 @@
   "deleteFitting": "删除装配",
   "deleteConfirm": "删除「{name}」？",
   "delete": "删除",
+  "renameFitting": "重命名装配",
+  "rename": "重命名",
   "capacitor": "电容",
   "offense": "进攻",
   "defense": "防御",
@@ -263,5 +265,31 @@
   "npcKillsCount": "击杀数量",
   "npcKillsSystemName": "星系名称",
   "npcKillsAmount": "金额",
-  "npcKillsJournal": "流水记录"
+  "npcKillsJournal": "流水记录",
+
+  "cloudSaveTitle": "保存到游戏",
+  "cloudSavePrompt": "装配已修改，是否保存到游戏？",
+  "cloudSaveConfirm": "保存",
+  "cloudSaveSkip": "不保存",
+  "cloudSaveSuccess": "已保存到游戏",
+  "cloudSaveFailed": "保存失败",
+  "cloudSaveNoCharacter": "请先设置主角色",
+  "cloudSynced": "已同步到游戏",
+  "cloudModified": "本地已修改",
+  "cloudNotSynced": "仅本地保存",
+  "cloudFetch": "从游戏拉取装配",
+  "cloudFetchFailed": "拉取装配失败",
+  "cloudFittings": "游戏装配",
+  "cloudNoFittings": "游戏中没有装配",
+  "cloudSearchHint": "搜索装配...",
+  "@cloudSearchHint": { "description": "Cloud fittings search hint" },
+  "cloudNoResults": "没有匹配的装配",
+  "@cloudNoResults": { "description": "No search results" },
+  "cloudImport": "导入",
+  "cloudImportSuccess": "已导入「{name}」",
+  "@cloudImportSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

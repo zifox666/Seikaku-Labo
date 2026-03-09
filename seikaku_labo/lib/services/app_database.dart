@@ -46,8 +46,9 @@ class AppDatabase {
       _migrateV1(db);
     }
 
-    // 未来版本在此追加：
-    // if (currentVersion < 2) { _migrateV2(db); }
+    if (currentVersion < 2) {
+      _migrateV2(db);
+    }
   }
 
   /// V1: 创建装配表
@@ -66,6 +67,12 @@ class AppDatabase {
     db.execute('PRAGMA user_version = 1');
   }
 
+  /// V2: 添加云端装配 ID 字段
+  void _migrateV2(Database db) {
+    db.execute('ALTER TABLE "saved_fits" ADD COLUMN "cloudFittingId" INTEGER');
+    db.execute('PRAGMA user_version = 2');
+  }
+
   // ─── 装配 CRUD ─────────────────────────────────
 
   /// 获取所有已保存装配
@@ -82,6 +89,7 @@ class AppDatabase {
       'fitJson': row['fitJson'] as String,
       'createdAt': row['createdAt'] as String,
       'updatedAt': row['updatedAt'] as String,
+      'cloudFittingId': row['cloudFittingId'] as int?,
     }).toList();
   }
 
@@ -94,12 +102,13 @@ class AppDatabase {
     required String fitJson,
     required DateTime createdAt,
     required DateTime updatedAt,
+    int? cloudFittingId,
   }) {
     _ensureOpen();
     _db!.execute('''
       INSERT OR REPLACE INTO "saved_fits"
-        ("id", "name", "shipTypeId", "shipName", "fitJson", "createdAt", "updatedAt")
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+        ("id", "name", "shipTypeId", "shipName", "fitJson", "createdAt", "updatedAt", "cloudFittingId")
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ''', [
       id,
       name,
@@ -108,6 +117,7 @@ class AppDatabase {
       fitJson,
       createdAt.toIso8601String(),
       updatedAt.toIso8601String(),
+      cloudFittingId,
     ]);
   }
 

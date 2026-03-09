@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/cloud_fitting.dart';
 import '../models/esf_fit.dart';
 import '../models/fitting_state.dart';
+import 'api_providers.dart';
 import 'app_providers.dart';
 import 'sde_provider.dart';
 
@@ -13,25 +15,35 @@ class FittingState {
   final SavedFit? savedFit;
   final String? shipName;
   final Map<String, int>? slotCounts; // high/medium/low/rig/subSystem
+  final String? _originalFitJson; // 进入详情时的原始 fitJson，用于脏标记对比
 
   const FittingState({
     this.fit,
     this.savedFit,
     this.shipName,
     this.slotCounts,
-  });
+    String? originalFitJson,
+  }) : _originalFitJson = originalFitJson;
+
+  /// 装配是否已修改（与进入时的状态对比）
+  bool get isDirty {
+    if (fit == null || _originalFitJson == null) return false;
+    return jsonEncode(fit!.toJson()) != _originalFitJson;
+  }
 
   FittingState copyWith({
     EsfFit? fit,
     SavedFit? savedFit,
     String? shipName,
     Map<String, int>? slotCounts,
+    String? originalFitJson,
   }) {
     return FittingState(
       fit: fit ?? this.fit,
       savedFit: savedFit ?? this.savedFit,
       shipName: shipName ?? this.shipName,
       slotCounts: slotCounts ?? this.slotCounts,
+      originalFitJson: originalFitJson ?? _originalFitJson,
     );
   }
 }
@@ -50,12 +62,13 @@ class FittingNotifier extends Notifier<FittingState> {
   }) {
     final fit = EsfFit(shipTypeId: shipTypeId);
     final now = DateTime.now();
+    final fitJson = jsonEncode(fit.toJson());
     final saved = SavedFit(
       id: now.millisecondsSinceEpoch.toString(),
       name: fitName,
       shipTypeId: shipTypeId,
       shipName: shipName,
-      fitJson: jsonEncode(fit.toJson()),
+      fitJson: fitJson,
       createdAt: now,
       updatedAt: now,
     );
@@ -64,6 +77,7 @@ class FittingNotifier extends Notifier<FittingState> {
       savedFit: saved,
       shipName: shipName,
       slotCounts: slotCounts,
+      originalFitJson: fitJson,
     );
   }
 
@@ -77,6 +91,7 @@ class FittingNotifier extends Notifier<FittingState> {
       savedFit: saved,
       shipName: saved.shipName,
       slotCounts: slotCounts,
+      originalFitJson: saved.fitJson,
     );
   }
 
@@ -411,6 +426,42 @@ class FittingNotifier extends Notifier<FittingState> {
     _persistCurrent();
   }
 
+  /// 保存当前装配到云端
+  /// 返回新的 cloudFittingId
+  Future<int> saveToCloud(int characterId) async {
+    final fit = state.fit;
+    final saved = state.savedFit;
+    if (fit == null || saved == null) {
+      throw StateError('No active fitting to save');
+    }
+
+    final infoService = ref.read(infoServiceProvider);
+    final items = FittingFlag.fitToItems(fit);
+    final newCloudId = await infoService.saveFitting(
+      characterId: characterId,
+      fittingId: saved.cloudFittingId,
+      name: saved.name,
+      shipTypeId: fit.shipTypeId,
+      items: items,
+    );
+
+    // 更新本地 cloudFittingId 并重置脏标记
+    final currentFitJson = jsonEncode(fit.toJson());
+    final updatedSaved = saved.copyWith(
+      cloudFittingId: newCloudId,
+      updatedAt: DateTime.now(),
+    );
+    state = FittingState(
+      fit: fit,
+      savedFit: updatedSaved,
+      shipName: state.shipName,
+      slotCounts: state.slotCounts,
+      originalFitJson: currentFitJson,
+    );
+    _persistCurrent();
+    return newCloudId;
+  }
+
   /// 清空装配
   void clear() {
     state = const FittingState();
@@ -452,6 +503,7 @@ class SavedFitsNotifier extends Notifier<List<SavedFit>> {
       fitJson: row['fitJson'] as String,
       createdAt: DateTime.parse(row['createdAt'] as String),
       updatedAt: DateTime.parse(row['updatedAt'] as String),
+      cloudFittingId: row['cloudFittingId'] as int?,
     )).toList();
   }
 
@@ -468,6 +520,7 @@ class SavedFitsNotifier extends Notifier<List<SavedFit>> {
       fitJson: fit.fitJson,
       createdAt: fit.createdAt,
       updatedAt: fit.updatedAt,
+      cloudFittingId: fit.cloudFittingId,
     );
     state = [...state, fit];
   }
@@ -488,6 +541,7 @@ class SavedFitsNotifier extends Notifier<List<SavedFit>> {
       fitJson: fit.fitJson,
       createdAt: fit.createdAt,
       updatedAt: fit.updatedAt,
+      cloudFittingId: fit.cloudFittingId,
     );
     state = state.map((f) => f.id == fit.id ? fit : f).toList();
   }

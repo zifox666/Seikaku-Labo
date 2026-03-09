@@ -7,6 +7,7 @@ class SavedFit {
   final String fitJson; // EsfFit JSON
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int? cloudFittingId; // 云端装配 ID（null 表示未同步到云端）
 
   const SavedFit({
     required this.id,
@@ -16,12 +17,15 @@ class SavedFit {
     required this.fitJson,
     required this.createdAt,
     required this.updatedAt,
+    this.cloudFittingId,
   });
 
   SavedFit copyWith({
     String? name,
     String? fitJson,
     DateTime? updatedAt,
+    int? cloudFittingId,
+    bool clearCloudFittingId = false,
   }) {
     return SavedFit(
       id: id,
@@ -31,6 +35,7 @@ class SavedFit {
       fitJson: fitJson ?? this.fitJson,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      cloudFittingId: clearCloudFittingId ? null : (cloudFittingId ?? this.cloudFittingId),
     );
   }
 }
