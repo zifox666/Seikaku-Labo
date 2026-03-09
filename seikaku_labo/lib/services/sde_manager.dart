@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'geo_service.dart';
+
 /// SDE 数据库下载与更新管理
 ///
 /// 从 GitHub Release(garveen/eve-sde-converter) 下载 sde.sqlite.bz2，
@@ -143,8 +145,11 @@ class SdeManager {
   }) async {
     onProgress?.call(0.0, 'downloading');
 
+    // 对中国大陆用户使用 GitHub 加速代理
+    final downloadUrl = GeoService.proxyGitHubUrl(release.downloadUrl);
+
     // 下载 bz2 文件
-    final request = http.Request('GET', Uri.parse(release.downloadUrl));
+    final request = http.Request('GET', Uri.parse(downloadUrl));
     final streamedResponse = await http.Client().send(request);
 
     if (streamedResponse.statusCode != 200) {

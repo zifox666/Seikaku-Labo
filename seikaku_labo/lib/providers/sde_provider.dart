@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../services/geo_service.dart';
 import '../services/sde_manager.dart';
 import '../services/sde_service.dart';
 
@@ -63,6 +64,9 @@ class SdeNotifier extends Notifier<SdeState> {
   /// 检查更新，首次自动下载
   Future<void> checkAndAutoDownload() async {
     state = state.copyWith(status: SdeStatus.checking);
+
+    // 首次检测地理位置，以便对中国用户启用代理
+    await GeoService.detectCountry();
 
     final result = await SdeManager.checkForUpdate();
 

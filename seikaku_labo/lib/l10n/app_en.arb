@@ -157,6 +157,26 @@
       "size": { "type": "String" }
     }
   },
+  "imageChecking": "Checking for image pack...",
+  "@imageChecking": {
+    "description": "Image pack check in progress"
+  },
+  "imageDownloading": "Downloading image pack...",
+  "@imageDownloading": {
+    "description": "Image pack download in progress"
+  },
+  "imageExtracting": "Extracting image pack...",
+  "@imageExtracting": {
+    "description": "Image pack extraction in progress"
+  },
+  "imageSaving": "Saving image pack...",
+  "@imageSaving": {
+    "description": "Image pack saving in progress"
+  },
+  "imageFirstLaunch": "First launch: downloading image pack",
+  "@imageFirstLaunch": {
+    "description": "First launch image download message"
+  },
   "shipSelection": "Select Ship",
   "@shipSelection": {
     "description": "Ship selection page title"

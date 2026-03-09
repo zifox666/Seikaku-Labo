@@ -28,18 +28,21 @@ class SeikakuLaboApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sdeReady = ref.watch(sdeReadyProvider);
-    // 同步启动图片包检查（不阻塞 SDE 流程）
+    final imageReady = ref.watch(imagePackReadyProvider);
+    // 同步启动图片包检查
     ref.watch(imagePackNotifierProvider);
 
-    // SDE 未就绪时显示启动页（下载/检查/错误）
-    // 就绪后显示主界面
+    // SDE 和图片包都就绪后才进入主界面
+    // 首次启动时两者都需要下载完成
+    final allReady = sdeReady && imageReady;
+
     return MaterialApp(
       title: 'Seikaku Labo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: sdeReady ? _MainApp() : const SplashPage(),
+      home: allReady ? _MainApp() : const SplashPage(),
     );
   }
 }

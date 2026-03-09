@@ -126,6 +126,21 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get imageChecking => '正在检查图片包...';
+
+  @override
+  String get imageDownloading => '正在下载图片包...';
+
+  @override
+  String get imageExtracting => '正在解压图片包...';
+
+  @override
+  String get imageSaving => '正在保存图片包...';
+
+  @override
+  String get imageFirstLaunch => '首次启动：正在下载图片包';
+
+  @override
   String get shipSelection => '选择舰船';
 
   @override

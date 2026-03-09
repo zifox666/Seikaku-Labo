@@ -320,6 +320,36 @@ abstract class AppLocalizations {
   /// **'Size: {size}'**
   String sdeSize(String size);
 
+  /// Image pack check in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for image pack...'**
+  String get imageChecking;
+
+  /// Image pack download in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading image pack...'**
+  String get imageDownloading;
+
+  /// Image pack extraction in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Extracting image pack...'**
+  String get imageExtracting;
+
+  /// Image pack saving in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Saving image pack...'**
+  String get imageSaving;
+
+  /// First launch image download message
+  ///
+  /// In en, this message translates to:
+  /// **'First launch: downloading image pack'**
+  String get imageFirstLaunch;
+
   /// Ship selection page title
   ///
   /// In en, this message translates to:

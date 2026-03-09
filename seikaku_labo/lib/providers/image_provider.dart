@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../services/geo_service.dart';
 import '../services/image_manager.dart';
 import '../widgets/type_icon.dart';
 
@@ -61,6 +62,9 @@ class ImagePackNotifier extends Notifier<ImagePackState> {
   /// 检查更新，首次自动下载
   Future<void> checkAndAutoDownload() async {
     state = state.copyWith(status: ImagePackStatus.checking);
+
+    // 首次检测地理位置，以便对中国用户启用代理
+    await GeoService.detectCountry();
 
     final result = await ImageManager.checkForUpdate();
 

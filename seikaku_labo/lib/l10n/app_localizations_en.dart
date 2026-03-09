@@ -127,6 +127,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get imageChecking => 'Checking for image pack...';
+
+  @override
+  String get imageDownloading => 'Downloading image pack...';
+
+  @override
+  String get imageExtracting => 'Extracting image pack...';
+
+  @override
+  String get imageSaving => 'Saving image pack...';
+
+  @override
+  String get imageFirstLaunch => 'First launch: downloading image pack';
+
+  @override
   String get shipSelection => 'Select Ship';
 
   @override
