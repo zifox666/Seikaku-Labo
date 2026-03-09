@@ -30,21 +30,36 @@ class InfoService {
 
   /// 获取指定角色刷怪报表
   /// POST /info/npc-kills
-  Future<NpcKillsData> getNpcKills(int characterId, {int page = 1, int pageSize = 20}) async {
-    final data = await _client.post(
-      '/info/npc-kills',
-      body: {'character_id': characterId, 'page': page, 'page_size': pageSize},
-    );
+  Future<NpcKillsData> getNpcKills(
+    int characterId, {
+    int page = 1,
+    int pageSize = 20,
+    String? startDate,
+    String? endDate,
+  }) async {
+    final body = <String, dynamic>{
+      'character_id': characterId,
+      'page': page,
+      'page_size': pageSize,
+    };
+    if (startDate != null) body['start_date'] = startDate;
+    if (endDate != null) body['end_date'] = endDate;
+    final data = await _client.post('/info/npc-kills', body: body);
     return NpcKillsData.fromJson(data as Map<String, dynamic>);
   }
 
   /// 获取全部角色刷怪报表
   /// POST /info/npc-kills/all
-  Future<NpcKillsData> getNpcKillsAll({int page = 1, int pageSize = 20}) async {
-    final data = await _client.post(
-      '/info/npc-kills/all',
-      body: {'page': page, 'page_size': pageSize},
-    );
+  Future<NpcKillsData> getNpcKillsAll({
+    int page = 1,
+    int pageSize = 20,
+    String? startDate,
+    String? endDate,
+  }) async {
+    final body = <String, dynamic>{'page': page, 'page_size': pageSize};
+    if (startDate != null) body['start_date'] = startDate;
+    if (endDate != null) body['end_date'] = endDate;
+    final data = await _client.post('/info/npc-kills/all', body: body);
     return NpcKillsData.fromJson(data as Map<String, dynamic>);
   }
 
