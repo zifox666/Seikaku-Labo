@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'geo_service.dart';
+
 /// FSD 图片包下载与更新管理
 ///
 /// 从 GitHub Release(zifox666/Seikaku-Labo) 下载 image.zip，
@@ -161,8 +163,11 @@ class ImageManager {
   }) async {
     onProgress?.call(0.0, 'downloading');
 
+    // 对中国大陆用户使用 GitHub 加速代理
+    final downloadUrl = GeoService.proxyGitHubUrl(release.downloadUrl);
+
     // 下载 zip 文件
-    final request = http.Request('GET', Uri.parse(release.downloadUrl));
+    final request = http.Request('GET', Uri.parse(downloadUrl));
     final streamedResponse = await http.Client().send(request);
 
     if (streamedResponse.statusCode != 200) {

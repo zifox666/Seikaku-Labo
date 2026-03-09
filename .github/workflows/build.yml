@@ -15,11 +15,70 @@ env:
 
 jobs:
   # ─────────────────────────────────────────────
+  # 预下载内置数据包（SDE + 图片包）
+  # 所有平台构建共享此 artifact
+  # ─────────────────────────────────────────────
+  prepare-bundled-data:
+    name: Prepare Bundled Data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch SDE latest release info
+        id: sde_info
+        run: |
+          RELEASE=$(curl -fsSL \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/zifox666/eve-sde-converter/releases/latest")
+          SDE_TAG=$(echo "$RELEASE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['tag_name'])")
+          SDE_URL=$(echo "$RELEASE" | python3 -c "
+          import sys,json; d=json.load(sys.stdin)
+          a=[x for x in d['assets'] if x['name']=='sde.sqlite.bz2']
+          print(a[0]['browser_download_url'])
+          ")
+          echo "SDE_TAG=$SDE_TAG" >> $GITHUB_OUTPUT
+          echo "SDE_URL=$SDE_URL" >> $GITHUB_OUTPUT
+          echo "Fetched SDE tag: $SDE_TAG"
+
+      - name: Download SDE database
+        run: |
+          echo "Downloading SDE from ${{ steps.sde_info.outputs.SDE_URL }}"
+          curl -fsSL "${{ steps.sde_info.outputs.SDE_URL }}" -o sde.sqlite.bz2
+          echo "SDE size: $(du -sh sde.sqlite.bz2 | cut -f1)"
+
+      - name: Download image pack (Nightly)
+        run: |
+          curl -fsSL \
+            "https://github.com/zifox666/Seikaku-Labo/releases/download/Nightly/image.zip" \
+            -o image.zip
+          echo "Image size: $(du -sh image.zip | cut -f1)"
+
+      - name: Create bundled_version.json
+        run: |
+          cat > bundled_version.json <<EOF
+          {
+            "bundled": true,
+            "sde_tag": "${{ steps.sde_info.outputs.SDE_TAG }}",
+            "image_tag": "Nightly"
+          }
+          EOF
+          cat bundled_version.json
+
+      - name: Upload bundled data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundled-data
+          path: |
+            bundled_version.json
+            sde.sqlite.bz2
+            image.zip
+          retention-days: 1
+
+  # ─────────────────────────────────────────────
   # Windows x64
   # ─────────────────────────────────────────────
   build-windows:
     name: Windows (x64)
     runs-on: windows-latest
+    needs: [prepare-bundled-data]
     steps:
       - uses: actions/checkout@v4
 
@@ -33,6 +92,12 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "${{ env.ENGINE_URL }}/seikaku_engine-windows-x86_64.dll" `
             -OutFile "${{ env.FLUTTER_DIR }}\seikaku_engine.dll"
+
+      - name: Download bundled data
+        uses: actions/download-artifact@v4
+        with:
+          name: bundled-data
+          path: ${{ env.FLUTTER_DIR }}/assets/bundled
 
       - name: Flutter pub get
         working-directory: ${{ env.FLUTTER_DIR }}
@@ -61,6 +126,7 @@ jobs:
   build-android:
     name: Android
     runs-on: ubuntu-latest
+    needs: [prepare-bundled-data]
     steps:
       - uses: actions/checkout@v4
 
@@ -79,6 +145,12 @@ jobs:
           curl -fsSL "${{ env.ENGINE_URL }}/libseikaku_engine-android-jniLibs.zip" \
             -o /tmp/jniLibs.zip
           unzip /tmp/jniLibs.zip -d "${{ env.FLUTTER_DIR }}/android/app/src/main/jniLibs"
+
+      - name: Download bundled data
+        uses: actions/download-artifact@v4
+        with:
+          name: bundled-data
+          path: ${{ env.FLUTTER_DIR }}/assets/bundled
 
       - name: Flutter pub get
         working-directory: ${{ env.FLUTTER_DIR }}
@@ -100,6 +172,7 @@ jobs:
   build-macos:
     name: macOS
     runs-on: macos-latest
+    needs: [prepare-bundled-data]
     steps:
       - uses: actions/checkout@v4
 
@@ -112,6 +185,12 @@ jobs:
         run: |
           curl -fsSL "${{ env.ENGINE_URL }}/libseikaku_engine-macos-universal.dylib" \
             -o "${{ env.FLUTTER_DIR }}/libseikaku_engine.dylib"
+
+      - name: Download bundled data
+        uses: actions/download-artifact@v4
+        with:
+          name: bundled-data
+          path: ${{ env.FLUTTER_DIR }}/assets/bundled
 
       - name: Flutter pub get
         working-directory: ${{ env.FLUTTER_DIR }}
@@ -148,6 +227,7 @@ jobs:
   build-ios:
     name: iOS
     runs-on: macos-latest
+    needs: [prepare-bundled-data]
     steps:
       - uses: actions/checkout@v4
 
@@ -165,6 +245,12 @@ jobs:
         run: |
           echo 'OTHER_LDFLAGS=$(inherited) -force_load $(SRCROOT)/libseikaku_engine.a' \
             >> "${{ env.FLUTTER_DIR }}/ios/Flutter/Release.xcconfig"
+
+      - name: Download bundled data
+        uses: actions/download-artifact@v4
+        with:
+          name: bundled-data
+          path: ${{ env.FLUTTER_DIR }}/assets/bundled
 
       - name: Flutter pub get
         working-directory: ${{ env.FLUTTER_DIR }}
@@ -193,6 +279,7 @@ jobs:
   build-linux:
     name: Linux (x64)
     runs-on: ubuntu-latest
+    needs: [prepare-bundled-data]
     steps:
       - uses: actions/checkout@v4
 
@@ -212,6 +299,12 @@ jobs:
         run: |
           curl -fsSL "${{ env.ENGINE_URL }}/libseikaku_engine-linux-x86_64.so" \
             -o "${{ env.FLUTTER_DIR }}/libseikaku_engine.so"
+
+      - name: Download bundled data
+        uses: actions/download-artifact@v4
+        with:
+          name: bundled-data
+          path: ${{ env.FLUTTER_DIR }}/assets/bundled
 
       - name: Flutter pub get
         working-directory: ${{ env.FLUTTER_DIR }}

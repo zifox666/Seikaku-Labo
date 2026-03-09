@@ -73,6 +73,7 @@ flutter:
     - lib/pb2/typeDogma.pb2
     - lib/pb2/types.pb2
     - assets/icon/ui/
+    - assets/bundled/
 
   fonts:
     - family: W04
