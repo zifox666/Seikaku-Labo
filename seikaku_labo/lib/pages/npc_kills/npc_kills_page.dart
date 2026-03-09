@@ -12,6 +12,8 @@ import '../../widgets/shell_scaffold.dart';
 const _kBreakpoint = 720.0;
 final _numFmt = NumberFormat('#,##0.00');
 final _intFmt = NumberFormat('#,###');
+final _dateFmt = DateFormat('yyyy-MM-dd');
+final _displayFmt = DateFormat('MM/dd');
 
 String _fmtIsk(double v) => _numFmt.format(v);
 String _fmtInt(int v) => _intFmt.format(v);
@@ -38,9 +40,15 @@ class _NpcKillsPageState extends ConsumerState<NpcKillsPage> {
   int _page = 1;
   final int _pageSize = 20;
 
+  late DateTime _startDate;
+  late DateTime _endDate;
+
   @override
   void initState() {
     super.initState();
+    final now = DateTime.now();
+    _startDate = DateTime(now.year, now.month, 1);
+    _endDate = DateTime(now.year, now.month + 1, 0);
     _loadCharacters();
   }
 
@@ -67,13 +75,15 @@ class _NpcKillsPageState extends ConsumerState<NpcKillsPage> {
     });
     try {
       final infoService = ref.read(infoServiceProvider);
+      final start = _dateFmt.format(_startDate);
+      final end = _dateFmt.format(_endDate);
       NpcKillsData data;
       if (_allMode) {
         data = await infoService.getNpcKillsAll(
-            page: _page, pageSize: _pageSize);
+            page: _page, pageSize: _pageSize, startDate: start, endDate: end);
       } else {
         data = await infoService.getNpcKills(_selectedChar!.characterId,
-            page: _page, pageSize: _pageSize);
+            page: _page, pageSize: _pageSize, startDate: start, endDate: end);
       }
       if (mounted) setState(() => _data = data);
     } catch (e) {
@@ -101,6 +111,32 @@ class _NpcKillsPageState extends ConsumerState<NpcKillsPage> {
       _page = 1;
     });
     _loadData();
+  }
+
+  Future<void> _pickDateRange() async {
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(DateTime.now().year + 1, 12, 31),
+      initialDateRange: DateTimeRange(start: _startDate, end: _endDate),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: Theme.of(context).colorScheme.copyWith(
+                surface: const Color(0xFF1A1A2E),
+              ),
+        ),
+        child: child!,
+      ),
+    );
+    if (picked != null) {
+      setState(() {
+        _startDate = picked.start;
+        _endDate = picked.end;
+        _data = null;
+        _page = 1;
+      });
+      _loadData();
+    }
   }
 
   @override
@@ -146,9 +182,90 @@ class _NpcKillsPageState extends ConsumerState<NpcKillsPage> {
     );
   }
 
+  Widget _buildDateBar(ColorScheme cs) {
+    final now = DateTime.now();
+    final isThisMonth =
+        _startDate.year == now.year && _startDate.month == now.month &&
+        _endDate.day == DateTime(now.year, now.month + 1, 0).day;
+    final lastMonth = DateTime(now.year, now.month - 1);
+    final isLastMonth =
+        _startDate.year == lastMonth.year && _startDate.month == lastMonth.month &&
+        _endDate.day == DateTime(lastMonth.year, lastMonth.month + 1, 0).day;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withAlpha(6),
+        border: Border(bottom: BorderSide(color: Colors.white.withAlpha(15))),
+      ),
+      child: Row(
+        children: [
+          // 本月快捷
+          _QuickChip(
+            label: '本月',
+            selected: isThisMonth,
+            onTap: () {
+              setState(() {
+                _startDate = DateTime(now.year, now.month, 1);
+                _endDate = DateTime(now.year, now.month + 1, 0);
+                _data = null;
+                _page = 1;
+              });
+              _loadData();
+            },
+          ),
+          const SizedBox(width: 6),
+          // 上月快捷
+          _QuickChip(
+            label: '上月',
+            selected: isLastMonth,
+            onTap: () {
+              setState(() {
+                _startDate = DateTime(lastMonth.year, lastMonth.month, 1);
+                _endDate = DateTime(lastMonth.year, lastMonth.month + 1, 0);
+                _data = null;
+                _page = 1;
+              });
+              _loadData();
+            },
+          ),
+          const Spacer(),
+          // 日期范围显示 + 点击自定义
+          InkWell(
+            onTap: _loadingData ? null : _pickDateRange,
+            borderRadius: BorderRadius.circular(6),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.date_range, size: 14,
+                      color: cs.primary.withAlpha(200)),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${_displayFmt.format(_startDate)} – ${_displayFmt.format(_endDate)}',
+                    style: TextStyle(
+                      color: cs.primary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Icon(Icons.arrow_drop_down, size: 16,
+                      color: cs.primary.withAlpha(180)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildBody(ColorScheme cs, AppLocalizations l10n) {
+    Widget content;
     if (_loadingData && _data == null) {
-      return Center(
+      content = Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -161,9 +278,8 @@ class _NpcKillsPageState extends ConsumerState<NpcKillsPage> {
           ],
         ),
       );
-    }
-    if (_error != null && _data == null) {
-      return Center(
+    } else if (_error != null && _data == null) {
+      content = Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -187,46 +303,52 @@ class _NpcKillsPageState extends ConsumerState<NpcKillsPage> {
           ],
         ),
       );
-    }
-    if (_data == null) {
-      return Center(
+    } else if (_data == null) {
+      content = Center(
         child: Text(
           l10n.selectCharacter,
           style: TextStyle(color: Colors.white.withAlpha(120)),
         ),
       );
+    } else {
+      final data = _data!;
+      content = RefreshIndicator(
+        onRefresh: _loadData,
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 32),
+          children: [
+            // ── 汇总卡片
+            _SummaryGrid(summary: data.summary, l10n: l10n),
+
+            // ── 按 NPC 分类
+            _NpcTable(byNpc: data.byNpc, l10n: l10n),
+
+            // ── 按地点分类
+            _SystemTable(bySystem: data.bySystem, l10n: l10n),
+
+            // ── 流水记录
+            _JournalSection(
+              journals: data.journals,
+              total: data.total,
+              page: data.page,
+              pageSize: data.pageSize,
+              l10n: l10n,
+              isLoading: _loadingData,
+              onPageChanged: (p) {
+                setState(() => _page = p);
+                _loadData();
+              },
+            ),
+          ],
+        ),
+      );
     }
 
-    final data = _data!;
-    return RefreshIndicator(
-      onRefresh: _loadData,
-      child: ListView(
-        padding: const EdgeInsets.only(bottom: 32),
-        children: [
-          // ── 汇总卡片
-          _SummaryGrid(summary: data.summary, l10n: l10n),
-
-          // ── 按 NPC 分类
-          _NpcTable(byNpc: data.byNpc, l10n: l10n),
-
-          // ── 按地点分类
-          _SystemTable(bySystem: data.bySystem, l10n: l10n),
-
-          // ── 流水记录
-          _JournalSection(
-            journals: data.journals,
-            total: data.total,
-            page: data.page,
-            pageSize: data.pageSize,
-            l10n: l10n,
-            isLoading: _loadingData,
-            onPageChanged: (p) {
-              setState(() => _page = p);
-              _loadData();
-            },
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        _buildDateBar(cs),
+        Expanded(child: content),
+      ],
     );
   }
 }
@@ -859,6 +981,47 @@ class _TableRow extends StatelessWidget {
                   ),
                 ))
             .toList(),
+      ),
+    );
+  }
+}
+
+// ── 快捷月份芯片 ──────────────────────────────────────────────────────────────
+
+class _QuickChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _QuickChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: selected ? cs.primary.withAlpha(40) : Colors.white.withAlpha(10),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: selected ? cs.primary : Colors.white.withAlpha(20),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? cs.primary : Colors.white54,
+            fontSize: 12,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
       ),
     );
   }

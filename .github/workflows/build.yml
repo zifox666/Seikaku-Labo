@@ -87,11 +87,21 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Download engine DLL
+      - name: Checkout Seikaku-Engine
+        uses: actions/checkout@v4
+        with:
+          repository: zifox666/Seikaku-Engine
+          path: seikaku-engine
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build engine DLL
         shell: pwsh
+        working-directory: seikaku-engine
         run: |
-          Invoke-WebRequest -Uri "${{ env.ENGINE_URL }}/seikaku_engine-windows-x86_64.dll" `
-            -OutFile "${{ env.FLUTTER_DIR }}\seikaku_engine.dll"
+          cargo build --release --no-default-features --features flutter,eft
+          Copy-Item "target\release\seikaku_engine.dll" "..\${{ env.FLUTTER_DIR }}\seikaku_engine.dll"
 
       - name: Download bundled data
         uses: actions/download-artifact@v4
@@ -140,11 +150,27 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Download engine jniLibs
+      - name: Checkout Seikaku-Engine
+        uses: actions/checkout@v4
+        with:
+          repository: zifox666/Seikaku-Engine
+          path: seikaku-engine
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
+      - name: Build engine jniLibs
+        working-directory: seikaku-engine
         run: |
-          curl -fsSL "${{ env.ENGINE_URL }}/libseikaku_engine-android-jniLibs.zip" \
-            -o /tmp/jniLibs.zip
-          unzip /tmp/jniLibs.zip -d "${{ env.FLUTTER_DIR }}/android/app/src/main/jniLibs"
+          export ANDROID_NDK_ROOT=$ANDROID_NDK_LATEST_HOME
+          cargo ndk -t arm64-v8a -t armeabi-v7a -t x86_64 -t x86 \
+            -o "./android-jniLibs" build --release --no-default-features --features flutter,eft
+          cp -r android-jniLibs/ ../${{ env.FLUTTER_DIR }}/android/app/src/main/jniLibs/
 
       - name: Download bundled data
         uses: actions/download-artifact@v4
@@ -198,10 +224,26 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Download engine dylib
+      - name: Checkout Seikaku-Engine
+        uses: actions/checkout@v4
+        with:
+          repository: zifox666/Seikaku-Engine
+          path: seikaku-engine
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
+
+      - name: Build engine dylib (universal)
+        working-directory: seikaku-engine
         run: |
-          curl -fsSL "${{ env.ENGINE_URL }}/libseikaku_engine-macos-universal.dylib" \
-            -o "${{ env.FLUTTER_DIR }}/libseikaku_engine.dylib"
+          cargo build --release --no-default-features --features flutter,eft --target x86_64-apple-darwin
+          cargo build --release --no-default-features --features flutter,eft --target aarch64-apple-darwin
+          lipo -create -output libseikaku_engine.dylib \
+            target/x86_64-apple-darwin/release/libseikaku_engine.dylib \
+            target/aarch64-apple-darwin/release/libseikaku_engine.dylib
+          cp libseikaku_engine.dylib ../${{ env.FLUTTER_DIR }}/libseikaku_engine.dylib
 
       - name: Download bundled data
         uses: actions/download-artifact@v4
@@ -253,10 +295,22 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Download engine static lib
+      - name: Checkout Seikaku-Engine
+        uses: actions/checkout@v4
+        with:
+          repository: zifox666/Seikaku-Engine
+          path: seikaku-engine
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios
+
+      - name: Build engine static lib (iOS device)
+        working-directory: seikaku-engine
         run: |
-          curl -fsSL "${{ env.ENGINE_URL }}/libseikaku_engine-ios-device.a" \
-            -o "${{ env.FLUTTER_DIR }}/ios/libseikaku_engine.a"
+          cargo build --release --no-default-features --features flutter,eft --target aarch64-apple-ios
+          cp target/aarch64-apple-ios/release/libseikaku_engine.a ../${{ env.FLUTTER_DIR }}/ios/libseikaku_engine.a
 
       - name: Configure static linking
         run: |
@@ -316,10 +370,20 @@ jobs:
             clang cmake ninja-build pkg-config \
             libgtk-3-dev liblzma-dev libstdc++-12-dev
 
-      - name: Download engine .so
+      - name: Checkout Seikaku-Engine
+        uses: actions/checkout@v4
+        with:
+          repository: zifox666/Seikaku-Engine
+          path: seikaku-engine
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build engine .so
+        working-directory: seikaku-engine
         run: |
-          curl -fsSL "${{ env.ENGINE_URL }}/libseikaku_engine-linux-x86_64.so" \
-            -o "${{ env.FLUTTER_DIR }}/libseikaku_engine.so"
+          cargo build --release --no-default-features --features flutter,eft
+          cp target/release/libseikaku_engine.so ../${{ env.FLUTTER_DIR }}/libseikaku_engine.so
 
       - name: Download bundled data
         uses: actions/download-artifact@v4
