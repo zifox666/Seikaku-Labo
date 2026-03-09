@@ -152,6 +152,23 @@ jobs:
           name: bundled-data
           path: ${{ env.FLUTTER_DIR }}/assets/bundled
 
+      - name: Setup Android keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        working-directory: ${{ env.FLUTTER_DIR }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/app/release.jks
+            printf 'storeFile=../app/release.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+              "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > android/key.properties
+            echo "Release keystore configured."
+          else
+            echo "No keystore secret found, falling back to debug signing."
+          fi
+
       - name: Flutter pub get
         working-directory: ${{ env.FLUTTER_DIR }}
         run: flutter pub get
@@ -260,12 +277,16 @@ jobs:
         working-directory: ${{ env.FLUTTER_DIR }}
         run: flutter build ios --release --no-codesign
 
-      - name: Create IPA
+      - name: Create IPA (unsigned, compatible with 爱思助手/Sideloadly)
         run: |
           cd "${{ env.FLUTTER_DIR }}/build/ios/iphoneos"
           mkdir -p Payload
           cp -r Runner.app Payload/
+          # 删除所有旧签名信息，确保爱思助手可以从头重签
+          find Payload/Runner.app -name '_CodeSignature' -type d -exec rm -rf {} + 2>/dev/null || true
+          find Payload/Runner.app -name 'embedded.mobileprovision' -delete 2>/dev/null || true
           zip -r "$GITHUB_WORKSPACE/seikaku-labo-ios.ipa" Payload
+          echo "IPA size: $(du -sh $GITHUB_WORKSPACE/seikaku-labo-ios.ipa | cut -f1)"
 
       - uses: actions/upload-artifact@v4
         with:
