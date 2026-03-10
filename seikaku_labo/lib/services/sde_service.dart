@@ -219,7 +219,7 @@ class SdeService {
   /// 获取舰船槽位数量
   Map<String, int> getShipSlotCounts(int typeId) {
     _ensureLoaded();
-    // attributeID: 12=hiSlots, 13=medSlots, 14=lowSlots,
+    // attributeID: 12=lowSlots, 13=medSlots, 14=hiSlots,
     //              1137=rigSlots, 1367=subSystemSlot
     final result = _db!.select('''
       SELECT ta."attributeID",
@@ -240,11 +240,11 @@ class SdeService {
       final value = (row['value'] as num?)?.toInt() ?? 0;
       switch (attrId) {
         case 12:
-          slots['high'] = value;
+          slots['low'] = value;
         case 13:
           slots['medium'] = value;
         case 14:
-          slots['low'] = value;
+          slots['high'] = value;
         case 1137:
           slots['rig'] = value;
         case 1367:
