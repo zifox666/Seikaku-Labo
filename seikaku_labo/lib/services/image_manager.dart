@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'cos_service.dart';
 import 'geo_service.dart';
 
 /// FSD 图片包下载与更新管理
@@ -65,9 +66,42 @@ class ImageManager {
 
   /// 从 GitHub API 获取最新 release 信息
   ///
+  /// 中国大陆用户优先从 COS 储存桶获取，海外用户从 GitHub API 获取。
   /// 返回 `(info, errorMessage)` 二元组；成功时 errorMessage 为 null，
   /// 失败时 info 为 null，errorMessage 包含具体原因。
   static Future<(ImageReleaseInfo?, String?)> fetchLatestRelease() async {
+    // CN + COS → 从储存桶获取版本信息
+    if (GeoService.isInChina() && CosService.isEnabled) {
+      final cosResult = await _fetchFromCos();
+      if (cosResult.$1 != null) return cosResult;
+      // COS 失败，降级到 GitHub
+    }
+    return _fetchFromGitHub();
+  }
+
+  /// 从 COS 储存桶获取版本信息
+  static Future<(ImageReleaseInfo?, String?)> _fetchFromCos() async {
+    try {
+      final version = await CosService.fetchVersion();
+      if (version == null) {
+        return (null, 'Failed to fetch COS version info');
+      }
+      return (
+        ImageReleaseInfo(
+          tag: version.imageTag,
+          publishedAt: '',
+          downloadUrl: CosService.imageDownloadUrl,
+          size: 0,
+        ),
+        null,
+      );
+    } catch (e) {
+      return (null, 'COS error: $e');
+    }
+  }
+
+  /// 从 GitHub API 获取最新 release 信息
+  static Future<(ImageReleaseInfo?, String?)> _fetchFromGitHub() async {
     try {
       final url = Uri.parse(
         'https://api.github.com/repos/$_repoOwner/$_repoName/releases/latest',
@@ -113,7 +147,6 @@ class ImageManager {
       return (null, e.toString());
     }
   }
-
   /// 检查更新
   static Future<ImageUpdateCheckResult> checkForUpdate() async {
     final hasLocal = await hasLocalImages();

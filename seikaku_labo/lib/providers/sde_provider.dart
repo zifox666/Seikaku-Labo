@@ -1,7 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../services/bundled_data_manager.dart';
 import '../services/geo_service.dart';
 import '../services/sde_manager.dart';
 import '../services/sde_service.dart';
@@ -67,22 +65,8 @@ class SdeNotifier extends Notifier<SdeState> {
   Future<void> checkAndAutoDownload() async {
     state = state.copyWith(status: SdeStatus.checking);
 
-    // 首次检测地理位置，以便对中国用户启用代理
+    // 首次检测地理位置，以便对中国用户启用 COS 下载源
     await GeoService.detectCountry();
-
-    final hasLocal = await SdeManager.hasLocalDatabase();
-
-    // ── 优先使用内置包（无需网络）──────────────────────────────────────
-    if (!hasLocal) {
-      final bundledVersion = await BundledDataManager.getVersion();
-      if (bundledVersion != null && await BundledDataManager.hasBundledSde()) {
-        await _installFromBundle(bundledVersion.sdeTag);
-        // 安装后在后台检查更新
-        _checkUpdateInBackground();
-        return;
-      }
-    }
-    // ── 内置包不可用，走网络 ──────────────────────────────────────────
 
     final result = await SdeManager.checkForUpdate();
 
@@ -128,36 +112,6 @@ class SdeNotifier extends Notifier<SdeState> {
           errorMessage: 'Update check failed, using local database.',
         );
         break;
-    }
-  }
-
-  /// 从内置资源安装 SDE
-  Future<void> _installFromBundle(String bundledTag) async {
-    state = state.copyWith(
-      status: SdeStatus.downloading,
-      progress: 0.0,
-    );
-    try {
-      _sdeService.close();
-      final path = await SdeManager.dbPath;
-      await BundledDataManager.installBundledSde(
-        targetPath: path,
-        onProgress: (p, s) => state = state.copyWith(progress: p, progressStage: s),
-      );
-      // 保存 tag
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('sde_release_tag', bundledTag);
-      await _loadDatabase();
-      state = state.copyWith(
-        status: SdeStatus.ready,
-        localTag: bundledTag,
-        progress: 1.0,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        status: SdeStatus.error,
-        errorMessage: 'Bundled install failed: $e',
-      );
     }
   }
 

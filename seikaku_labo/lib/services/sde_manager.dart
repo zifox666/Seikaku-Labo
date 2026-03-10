@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'cos_service.dart';
 import 'geo_service.dart';
 
 /// SDE 数据库下载与更新管理
@@ -49,8 +50,38 @@ class SdeManager {
     return prefs.getString(_prefKeyTag);
   }
 
-  /// 从 GitHub API 获取最新 release 信息
+  /// 获取最新 release 信息
+  ///
+  /// 中国大陆用户优先从 COS 储存桶获取，海外用户从 GitHub API 获取。
   static Future<SdeReleaseInfo?> fetchLatestRelease() async {
+    // CN + COS → 从储存桶获取版本信息
+    if (GeoService.isInChina() && CosService.isEnabled) {
+      final cosResult = await _fetchFromCos();
+      if (cosResult != null) return cosResult;
+      // COS 失败，降级到 GitHub
+    }
+    return _fetchFromGitHub();
+  }
+
+  /// 从 COS 储存桶获取版本信息
+  static Future<SdeReleaseInfo?> _fetchFromCos() async {
+    try {
+      final version = await CosService.fetchVersion();
+      if (version == null) return null;
+      return SdeReleaseInfo(
+        tag: version.sdeTag,
+        publishedAt: '',
+        downloadUrl: CosService.sdeDownloadUrl,
+        size: 0,
+      );
+    } catch (e) {
+      debugPrint('Failed to fetch SDE info from COS: $e');
+      return null;
+    }
+  }
+
+  /// 从 GitHub API 获取最新 release 信息
+  static Future<SdeReleaseInfo?> _fetchFromGitHub() async {
     try {
       final url = Uri.parse(
         'https://api.github.com/repos/$_repoOwner/$_repoName/releases/latest',
